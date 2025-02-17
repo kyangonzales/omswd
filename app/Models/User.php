@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role'
     ];
 
     /**
@@ -44,5 +45,38 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isLydoAdmin()
+    {
+        return $this->role === 'lydo_admin';
+    }
+    
+    public function isAicsAdmin()
+    {
+        return $this->role === 'aics_admin';
+    }
+
+    public function isOscaAdmin()
+    {
+        return $this->role === 'osca_admin';
+    }
+
+    public function isPdaoAdmin()
+    {
+        return $this->role === 'pdao_admin';
+    }
+    public function isLydoAicsAdmin()
+    {
+        return $this->role === 'lydo_aics_admin';
+    }
+    public function isReceptionist()
+    {
+        return $this->role === 'receptionist';
     }
 }
