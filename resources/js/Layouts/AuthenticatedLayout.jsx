@@ -21,8 +21,6 @@ import {
 } from "lucide-react";
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
-    console.log(user);
-
     const routesByUser = {
         admin: [
             { label: "Dashboard", url: "#", icon: LayoutDashboardIcon },
@@ -48,6 +46,12 @@ export default function AuthenticatedLayout({ header, children }) {
             { label: "Account", url: "#", icon: UserRoundPen },
             { label: "Settings", url: "#", icon: Settings2 },
         ],
+        receptionist: [
+            { label: "Dashboard", url: "#", icon: LayoutDashboardIcon },
+            { label: "Request", url: "#", icon: GitPullRequest },
+            { label: "Account", url: "#", icon: UserRoundPen },
+            { label: "Settings", url: "#", icon: Settings2 },
+        ],
         lydo_aics_admin: [
             { label: "Dashboard", url: "#", icon: LayoutDashboardIcon },
             { label: "Request", url: "#", icon: GitPullRequest },
@@ -55,17 +59,12 @@ export default function AuthenticatedLayout({ header, children }) {
             { label: "Settings", url: "#", icon: Settings2 },
         ],
     };
-
-    // Get the routes for the given user, or an empty array if user role is not found
     const routes = routesByUser[user.role] || [];
-
-    console.log(routes);
-
     return (
         <div className="min-h-screen flex">
             <SidebarProvider>
                 <AppSidebar routes={routes} user={user} />
-                <main>{children}</main>
+                <main className="w-full">{children}</main>
             </SidebarProvider>
         </div>
     );
