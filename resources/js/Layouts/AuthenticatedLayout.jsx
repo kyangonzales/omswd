@@ -47,8 +47,8 @@ export default function AuthenticatedLayout({ header, children }) {
             { label: "Settings", url: "#", icon: Settings2 },
         ],
         receptionist: [
-            { label: "Dashboard", url: "#", icon: LayoutDashboardIcon },
-            { label: "Request", url: "#", icon: GitPullRequest },
+            { label: "Dashboard", url: "/receptionist/dashboard", icon: LayoutDashboardIcon },
+            { label: "Request", url: "/receptionist/request", icon: GitPullRequest },
             { label: "Account", url: "#", icon: UserRoundPen },
             { label: "Settings", url: "#", icon: Settings2 },
         ],
@@ -64,7 +64,7 @@ export default function AuthenticatedLayout({ header, children }) {
         <div className="min-h-screen flex">
             <SidebarProvider>
                 <AppSidebar routes={routes} user={user} />
-                <main className="w-full">{children}</main>
+                <main className="w-full mx-12">{children}</main>
             </SidebarProvider>
         </div>
     );

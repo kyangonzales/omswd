@@ -18,7 +18,7 @@ Route::get('/', function () {
 //     return Inertia::render('Dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth',)->group(function () {
+Route::middleware('auth', )->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -60,9 +60,16 @@ Route::middleware(['auth', 'role:lydo_aics_admin'])->get('/lydo/dashboard', func
     return Inertia::render('LYDO/Dashboard');
 })->name('lydo.dashboard');
 
-Route::middleware(['auth', 'role:receptionist'])->get('/receptionist/dashboard', function () {
-    return Inertia::render('RECEPTIONIST/Dashboard');
-})->name('receptionist.dashboard');
+
+Route::middleware(['auth', 'role:receptionist'])->group(function () {
+    Route::get('/receptionist/dashboard', function () {
+        return Inertia::render('RECEPTIONIST/Dashboard');
+    })->name('receptionist.dashboard');
+    Route::get('/receptionist/request', function () {
+        return Inertia::render('RECEPTIONIST/Request');
+    })->name('request');
+
+});
 
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
