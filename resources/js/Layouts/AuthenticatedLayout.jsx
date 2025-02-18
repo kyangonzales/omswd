@@ -55,9 +55,6 @@ export default function AuthenticatedLayout({ header, children }) {
 
             { label: "Dashboard", url: "/receptionist/dashboard", icon: LayoutDashboardIcon },
             { label: "Request", url: "/receptionist/request", icon: GitPullRequest },
-
-            { label: "Dashboard", url: "#", icon: LayoutDashboardIcon },
-            { label: "Request", url: "#", icon: GitPullRequest },
             { label: "Messages", url: "/receptionist/messages", icon: MessageCircle },
 
             { label: "Account", url: "#", icon: UserRoundPen },

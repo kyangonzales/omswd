@@ -81,6 +81,10 @@ Route::middleware(['auth', 'role:receptionist'])->group(function () {
         return Inertia::render('RECEPTIONIST/Messages');
     })->name('receptionist.messages');
 
+    Route::get('receptionist/request', function () {
+        return Inertia::render('RECEPTIONIST/Request');
+    })->name('receptionist.request');
+
 });
 
 
