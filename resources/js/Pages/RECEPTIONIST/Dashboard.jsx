@@ -236,7 +236,7 @@ export default function Dashboard() {
                     📂2021
                 </p> 
             </div> */}
-
+<FileExplorer/>
             {/* <div className="w-full h-[11in] p-10 border shadow-lg bg-white mx-auto mt-3">
                 <div className="flex justify-between items-center mb-4">
                     <img src="storage/mswd.jpg" alt="Logo" className="w-20 h-20 mt-[-30px]" />
