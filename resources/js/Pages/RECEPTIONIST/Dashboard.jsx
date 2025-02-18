@@ -15,6 +15,159 @@ import {
   } from "@/components/ui/table"
 import { Printer } from 'lucide-react';
   
+
+import React, { useState, useEffect } from 'react';
+
+import {
+  Breadcrumb,
+  BreadcrumbEllipsis,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+
+
+
+
+
+function FileExplorer() {
+    const [selectedYear, setSelectedYear] = useState(null)
+    const [selectedMonth, setSelectedMonth] = useState(null)
+    
+    const currentDate = new Date()
+    const currentYear = currentDate.getFullYear()
+  
+    // Generate full months dynamically
+    const generateMonths = (year) => {
+      const months = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+      ]
+      return year === currentYear ? months.slice(0, currentDate.getMonth() + 1) : months
+    }
+  
+    const handleYearClick = (year) => {
+      setSelectedYear(year)
+      setSelectedMonth(null)
+    }
+  
+    const handleMonthClick = (month) => {
+      setSelectedMonth(month)
+    }
+  
+    const resetNavigation = () => {
+      setSelectedYear(null)
+      setSelectedMonth(null)
+    }
+  
+    // Dummy files grouped by date
+    const files = [
+      { name: "report1.pdf", date: "2025-02-18" },
+      { name: "notes.docx", date: "2025-02-18" },
+      { name: "summary.txt", date: "2025-02-17" },
+      { name: "data.xlsx", date: "2025-02-16" },
+    ]
+  
+    // Filter and sort files based on selected month and year
+    const filteredFiles = files.filter(file => {
+      const fileDate = new Date(file.date)
+      return (
+        fileDate.getFullYear() === selectedYear &&
+        fileDate.toLocaleString("default", { month: "long" }) === selectedMonth
+      )
+    }).sort((a, b) => new Date(b.date) - new Date(a.date))
+  
+    return (
+      <div className="p-5 bg-white shadow-md rounded-lg mt-5">
+        {/* Breadcrumb Navigation */}
+        <div className="mb-4 text-blue-500 cursor-pointer" onClick={resetNavigation}>
+          Home {selectedYear && `> ${selectedYear}`} {selectedMonth && `> ${selectedMonth}`}
+        </div>
+  
+        {/* Year Selection */}
+        {!selectedYear && (
+          <div className="flex flex-wrap gap-3 mt-4">
+            {Array.from({ length: 5 }, (_, i) => currentYear - i).map((year) => (
+              <button
+                key={year}
+                className="px-4 py-2 rounded-md bg-gray-200 hover:bg-blue-400 hover:text-white"
+                onClick={() => handleYearClick(year)}
+              >
+                📂 {year}
+              </button>
+            ))}
+          </div>
+        )}
+  
+        {/* Month Selection */}
+        {selectedYear && !selectedMonth && (
+          <div className="flex flex-wrap gap-3 mt-4">
+            {generateMonths(selectedYear).map((month) => (
+              <button
+                key={month}
+                className="px-4 py-2 rounded-md bg-gray-200 hover:bg-green-400 hover:text-white"
+                onClick={() => handleMonthClick(month)}
+              >
+                📂 {month}
+              </button>
+            ))}
+          </div>
+        )}
+  
+        {/* Display Files (Grouped by Date) */}
+        {selectedMonth && (
+          <div className="bg-gray-100 p-4 rounded-md mt-4">
+            <h3 className="font-semibold mb-2">📄 Files for {selectedMonth}, {selectedYear}</h3>
+            {filteredFiles.length > 0 ? (
+              filteredFiles.reduce((grouped, file) => {
+                const fileDate = new Date(file.date).toLocaleDateString("en-US", {
+                  year: "numeric", month: "long", day: "numeric"
+                })
+                if (!grouped[fileDate]) grouped[fileDate] = []
+                grouped[fileDate].push(file)
+                return grouped
+              }, {})
+            ) : (<p>No files available.</p>)}
+            {
+              Object.entries(
+                filteredFiles.reduce((grouped, file) => {
+                  const fileDate = new Date(file.date).toLocaleDateString("en-US", {
+                    year: "numeric", month: "long", day: "numeric"
+                  })
+                  if (!grouped[fileDate]) grouped[fileDate] = []
+                  grouped[fileDate].push(file)
+                  return grouped
+                }, {})
+              ).map(([date, files]) => (
+                <div key={date} className="mb-4">
+                  <h4 className="font-semibold text-gray-600">{date}</h4>
+                  <ul>
+                    {files.map((file, index) => (
+                      <li key={index} className="p-2 bg-white shadow rounded-md mb-2">📄 {file.name}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))
+            }
+          </div>
+        )}
+      </div>
+    )
+  }
+
+
+
+
+
+
 export default function Dashboard() {
     const currentDate = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 
@@ -27,7 +180,6 @@ export default function Dashboard() {
         document.body.innerHTML = originalContent;
         window.location.reload();
     };
-    
     return (
         <AuthenticatedLayout
             header={
@@ -38,7 +190,26 @@ export default function Dashboard() {
         >
             <Head title="Dashboard" />
 
-            <div className="w-full h-full p-10 border shadow-lg bg-white mx-auto mt-3 printable-item">
+            {/* <div className=''>
+                <p>
+                    📂2024
+                </p>
+                <p>
+                    📂2023
+                </p> 
+                <p>
+                    📂2022
+                </p>
+                <p>
+                    📂2021
+                </p> 
+            </div> */}
+
+<FileExplorer />
+
+
+
+            <div className="w-full h-full p-10 border shadow-lg bg-white mx-auto mt-3 printable-item hidden">
                 <div className="flex items-center justify-center mb-4">
                         <img src="/storage/mswd.jpg" alt="Logo" className="w-20 h-20 mr-2 mb-10" />
                         <div className="text-center">
@@ -127,7 +298,7 @@ export default function Dashboard() {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    <TableRow className="border-b">
+                                    <TableRow className="border-b ">
                                         <TableCell className="font-medium">Juan Dela Cruz</TableCell>
                                         <TableCell className="text-center">22</TableCell>
                                         <TableCell className="text-center">Male</TableCell>
