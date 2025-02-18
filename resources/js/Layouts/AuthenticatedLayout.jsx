@@ -73,7 +73,7 @@ export default function AuthenticatedLayout({ header, children }) {
         <div className="min-h-screen flex">
             <SidebarProvider>
                 <AppSidebar routes={routes} user={user} />
-                <main className="w-full mx-12">{children}</main>
+                <main className="w-full ">{children}</main>
             </SidebarProvider>
         </div>
     );
