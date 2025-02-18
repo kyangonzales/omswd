@@ -2,18 +2,12 @@
 
 use App\Models\User;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Foundation\Application;
-use App\Http\Controllers\ChatController;
-use Illuminate\Support\Facades\Broadcast;
-use App\Models\User;
-use Inertia\Inertia;
+
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\ChatController;
 use Illuminate\Support\Facades\Broadcast;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 
 Route::get('/', function () {
@@ -87,25 +81,6 @@ Route::middleware(['auth', 'role:receptionist'])->group(function () {
         return Inertia::render('RECEPTIONIST/Messages');
     })->name('receptionist.messages');
 
-    // })->name('settings');s
-
-
-    // Route::post('send-message', [ChatController::class, 'sendMessage']);
-
-});
-
-
-
-Route::middleware(['auth', 'role:receptionist'])->group(function () {
-    Route::get('/receptionist/dashboard', function () {
-        return Inertia::render('RECEPTIONIST/Dashboard');
-    })->name('receptionist.dashboard');
-    
-
-    Route::get('receptionist/messages', function () {
-        return Inertia::render('RECEPTIONIST/Messages');
-    })->name('receptionist.messages');
-
 });
 
 
@@ -116,20 +91,6 @@ Route::middleware(['auth', 'role:lydo_admin'])->get('/lydo/dashboard', function 
 Route::middleware(['auth', 'role:aics_admin'])->get('/aics/dashboard', function () {
     return Inertia::render('AICS/Dashboard');
 })->name('aics.dashboard');
-
-
-
-Route::middleware(['auth', 'role:osca_admin'])->group(function () {
-    Route::get('/osca/dashboard', function () {
-        return Inertia::render('OSCA/Dashboard');
-    })->name('osca.dashboard');
-    
-
-    Route::get('osca/messages', function () {
-        return Inertia::render('OSCA/Messages');
-    })->name('osca.messages');
-
-});
 
 
 Route::middleware(['auth', 'role:osca_admin'])->group(function () {
@@ -159,28 +120,3 @@ Route::middleware(['auth', 'role:lydo_aics_admin'])->get('/lydo/dashboard', func
 
 require __DIR__.'/auth.php';
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-
-Route::middleware(['auth', 'role:receptionist'])->group(function () {
-    Route::get('/receptionist/dashboard', function () {
-        return Inertia::render('RECEPTIONIST/Dashboard');
-    })->name('receptionist.dashboard');
-    Route::get('/receptionist/request', function () {
-        return Inertia::render('RECEPTIONIST/Request');
-    })->name('request');
-
-});
-=======
-// Route::middleware(['auth', 'role:receptionist'])->get('/receptionist/dashboard', function () {
-//     return Inertia::render('RECEPTIONIST/Dashboard');
-// })->name('receptionist.dashboard');
->>>>>>> Stashed changes
-=======
-// Route::middleware(['auth', 'role:receptionist'])->get('/receptionist/dashboard', function () {
-//     return Inertia::render('RECEPTIONIST/Dashboard');
-// })->name('receptionist.dashboard');
->>>>>>> Stashed changes
-
-
-require __DIR__ . '/auth.php';
