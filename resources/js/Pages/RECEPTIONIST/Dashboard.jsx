@@ -1,6 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -171,10 +172,14 @@ function FileExplorer() {
 =======
 import { useEffect, useState } from 'react';
 >>>>>>> Stashed changes
+=======
+import { useEffect, useState } from 'react';
+>>>>>>> Stashed changes
 
 export default function Dashboard() {
     const currentDate = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
     const handlePrint = () => {
         const printContent = document.querySelector(".printable-item").innerHTML;
@@ -186,6 +191,8 @@ export default function Dashboard() {
         window.location.reload();
     };
 =======
+=======
+>>>>>>> Stashed changes
     const [messages, setMessages] = useState([]);
 
     useEffect(() => {
@@ -202,6 +209,9 @@ export default function Dashboard() {
         }
     }, []);
 
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     return (
         <AuthenticatedLayout
@@ -213,6 +223,7 @@ export default function Dashboard() {
         >
             <Head title="Dashboard" />
 
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
             {/* <div className=''>
                 <p>
@@ -229,6 +240,8 @@ export default function Dashboard() {
                 </p> 
             </div> */}
 =======
+=======
+>>>>>>> Stashed changes
             {/* <div className="w-full h-[11in] p-10 border shadow-lg bg-white mx-auto mt-3">
                 <div className="flex justify-between items-center mb-4">
                     <img src="storage/mswd.jpg" alt="Logo" className="w-20 h-20 mt-[-30px]" />
@@ -400,6 +413,9 @@ export default function Dashboard() {
                     <li key={index}>{msg}</li>
                 ))}
             </ul>
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
         </AuthenticatedLayout>
     );

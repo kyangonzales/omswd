@@ -28,6 +28,9 @@ Route::middleware('auth', )->group(function () {
 Route::middleware('auth',)->group(function () {
     Route::post('send-message', [ChatController::class, 'sendMessage']);
     Route::get('getUser', [RegisteredUserController::class, 'users'])->name('getUser');
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -107,6 +110,7 @@ Route::middleware(['auth', 'role:lydo_aics_admin'])->get('/lydo/dashboard', func
 })->name('lydo.dashboard');
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 Route::middleware(['auth', 'role:receptionist'])->group(function () {
     Route::get('/receptionist/dashboard', function () {
@@ -117,6 +121,11 @@ Route::middleware(['auth', 'role:receptionist'])->group(function () {
     })->name('request');
 
 });
+=======
+// Route::middleware(['auth', 'role:receptionist'])->get('/receptionist/dashboard', function () {
+//     return Inertia::render('RECEPTIONIST/Dashboard');
+// })->name('receptionist.dashboard');
+>>>>>>> Stashed changes
 =======
 // Route::middleware(['auth', 'role:receptionist'])->get('/receptionist/dashboard', function () {
 //     return Inertia::render('RECEPTIONIST/Dashboard');

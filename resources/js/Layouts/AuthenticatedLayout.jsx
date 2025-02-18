@@ -59,6 +59,9 @@ export default function AuthenticatedLayout({ header, children }) {
             { label: "Dashboard", url: "#", icon: LayoutDashboardIcon },
             { label: "Request", url: "#", icon: GitPullRequest },
             { label: "Messages", url: "/receptionist/messages", icon: MessageCircle },
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
             { label: "Account", url: "#", icon: UserRoundPen },
             { label: "Settings", url: "#", icon: Settings2 },
