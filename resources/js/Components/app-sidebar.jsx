@@ -1,5 +1,3 @@
-import { Calendar, ChartNoAxesCombined, GitPullRequest, Home, Inbox, LayoutDashboardIcon, Search, Settings, Settings2, User, UserRoundPen  } from "lucide-react"
-
 import {
   Sidebar,
   SidebarContent,
@@ -14,39 +12,7 @@ import {
 import { NavUser } from "./nav-user"
 import { Link } from "@inertiajs/react";
 
-// Menu items.
-const items = [
-  {
-    title: "Dashboard",
-    url: "#",
-    icon: Home,
-  },
-  {
-    title: "User Management",
-    url: "#",
-    icon: Inbox,
-  },
-  {
-    title: "Analytics",
-    url: "#",
-    icon: Calendar,
-  },
-  {
-    title: "Report",
-    url: "#",
-    icon: Search,
-  },
-  {
-    title: "Settings",
-    url: "#",
-    icon: Settings,
-  },
-]
-
 export function AppSidebar({routes, user}) {
-
-    console.log(routes);
-    
   return (
     <Sidebar>
       <SidebarContent>

@@ -1,5 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
+<<<<<<< Updated upstream
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -167,10 +168,14 @@ function FileExplorer() {
 
 
 
+=======
+import { useEffect, useState } from 'react';
+>>>>>>> Stashed changes
 
 export default function Dashboard() {
     const currentDate = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 
+<<<<<<< Updated upstream
     const handlePrint = () => {
         const printContent = document.querySelector(".printable-item").innerHTML;
         const originalContent = document.body.innerHTML;
@@ -180,6 +185,24 @@ export default function Dashboard() {
         document.body.innerHTML = originalContent;
         window.location.reload();
     };
+=======
+    const [messages, setMessages] = useState([]);
+
+    useEffect(() => {
+        // Ensure window.Echo is available
+        if (window.Echo) {
+            const channel = window.Echo.channel('chat');
+            channel.listen('.message.sent', (event) => {
+                console.log('New message received:', event.message);
+                setMessages((prevMessages) => [...prevMessages, event.message]);
+            });
+            return () => {
+                window.Echo.leaveChannel('chat'); // Properly leave the channel
+            };
+        }
+    }, []);
+
+>>>>>>> Stashed changes
     return (
         <AuthenticatedLayout
             header={
@@ -190,6 +213,7 @@ export default function Dashboard() {
         >
             <Head title="Dashboard" />
 
+<<<<<<< Updated upstream
             {/* <div className=''>
                 <p>
                     📂2024
@@ -204,6 +228,42 @@ export default function Dashboard() {
                     📂2021
                 </p> 
             </div> */}
+=======
+            {/* <div className="w-full h-[11in] p-10 border shadow-lg bg-white mx-auto mt-3">
+                <div className="flex justify-between items-center mb-4">
+                    <img src="storage/mswd.jpg" alt="Logo" className="w-20 h-20 mt-[-30px]" />
+                    <div className="text-center">
+                        <h2 className="text-xl font-bold">MUNICIPAL SOCIAL WELFARE & DEVELOPMENT OFFICE</h2>
+                        <h2 className="text-xl font-bold">GENERAL TINIO, NUEVA ECIJA</h2>
+                        <h2 className="text-xl font-bold">INTAKE SHEET</h2>
+                    </div>
+                    <img src="storage/gt-logo.jpg" alt="Logo" className="w-20 h-20  mt-[-30px]" />
+                </div>
+                <div className="flex justify-between mb-4">
+                        <div className="w-1/2">
+                        <Label htmlFor="office"  className="text-lg">Select Office</Label>
+                        <Select>
+                            <SelectTrigger className="w-[280px]">
+                            <SelectValue placeholder="Select Office" />
+                            </SelectTrigger>
+                            <SelectContent>
+                            <SelectItem value="mswd">MSWD</SelectItem>
+                            <SelectItem value="aics">Aid to Individual in Crisis (AICS)</SelectItem>
+                            <SelectItem value="special_cases">Special Cases</SelectItem>
+                            <SelectItem value="pwd">Person with Disability (PWD)</SelectItem>
+                            <SelectItem value="solo_parent">Solo Parent</SelectItem>
+                            <SelectItem value="lydo">Local Youth Development Office (LYDO)</SelectItem>
+                            <SelectItem value="osca">Senior Citizen's Affairs (OSCA)</SelectItem>
+                            <SelectItem value="referral">Referral (Indigency, Ambulance, Philhealth, LCR, PAO)</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        </div>
+                            <div className="w-1/2 text-right font-bold text-lg">
+                                <Label>Date:</Label> <span className="border-b border-black text-xs">{currentDate}</span>
+                            </div>
+                    </div>
+                    <p className="text-sm font-bold mt-2 bg-zinc-200 p-2 ">I. IDENTIFYING INFORMATION</p>
+>>>>>>> Stashed changes
 
 <FileExplorer />
 
@@ -325,7 +385,22 @@ export default function Dashboard() {
                                 <Printer></Printer> Print
                             </Button>
                         </div>
+<<<<<<< Updated upstream
                 </div> 
+=======
+                        <Button type="submit" className="w-full">Submit</Button>
+                    </form>
+                </div> */}
+
+
+
+                <h2>Chat Messages</h2>
+            <ul>
+                {messages.map((msg, index) => (
+                    <li key={index}>{msg}</li>
+                ))}
+            </ul>
+>>>>>>> Stashed changes
         </AuthenticatedLayout>
     );
 }

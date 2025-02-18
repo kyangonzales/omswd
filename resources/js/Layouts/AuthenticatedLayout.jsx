@@ -13,6 +13,7 @@ import {
     Home,
     Inbox,
     LayoutDashboardIcon,
+    MessageCircle,
     Search,
     Settings,
     Settings2,
@@ -25,36 +26,47 @@ export default function AuthenticatedLayout({ header, children }) {
         admin: [
             { label: "Dashboard", url: "#", icon: LayoutDashboardIcon },
             { label: "User Management", url: "manage-user", icon: User },
+            { label: "Messages", url: "messages", icon: MessageCircle },
             { label: "Analytics", url: "#", icon: ChartNoAxesCombined },
             { label: "Settings", url: "#", icon: Settings2 },
         ],
         lydo_admin: [
             { label: "Dashboard", url: "#", icon: LayoutDashboardIcon },
             { label: "Request", url: "#", icon: GitPullRequest },
+            { label: "Messages", url: "manage-user", icon: MessageCircle },
             { label: "Account", url: "#", icon: UserRoundPen },
             { label: "Settings", url: "#", icon: Settings2 },
         ],
         osca_admin: [
             { label: "Dashboard", url: "#", icon: LayoutDashboardIcon },
             { label: "Request", url: "#", icon: GitPullRequest },
+            { label: "Messages", url: "/osca/messages", icon: MessageCircle },
             { label: "Account", url: "#", icon: UserRoundPen },
             { label: "Settings", url: "#", icon: Settings2 },
         ],
         aics_admin: [
             { label: "Dashboard", url: "#", icon: LayoutDashboardIcon },
             { label: "Request", url: "#", icon: GitPullRequest },
+            { label: "Messages", url: "manage-user", icon: MessageCircle },
             { label: "Account", url: "#", icon: UserRoundPen },
             { label: "Settings", url: "#", icon: Settings2 },
         ],
         receptionist: [
+<<<<<<< Updated upstream
             { label: "Dashboard", url: "/receptionist/dashboard", icon: LayoutDashboardIcon },
             { label: "Request", url: "/receptionist/request", icon: GitPullRequest },
+=======
+            { label: "Dashboard", url: "#", icon: LayoutDashboardIcon },
+            { label: "Request", url: "#", icon: GitPullRequest },
+            { label: "Messages", url: "/receptionist/messages", icon: MessageCircle },
+>>>>>>> Stashed changes
             { label: "Account", url: "#", icon: UserRoundPen },
             { label: "Settings", url: "#", icon: Settings2 },
         ],
         lydo_aics_admin: [
             { label: "Dashboard", url: "#", icon: LayoutDashboardIcon },
             { label: "Request", url: "#", icon: GitPullRequest },
+            { label: "Messages", url: "manage-user", icon: MessageCircle },
             { label: "Account", url: "#", icon: UserRoundPen },
             { label: "Settings", url: "#", icon: Settings2 },
         ],

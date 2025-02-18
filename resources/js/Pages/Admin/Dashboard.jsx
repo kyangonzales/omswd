@@ -1,17 +1,8 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-  } from "@/components/ui/select"
+import { useState } from 'react';
 export default function Dashboard() {
-    const currentDate = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+    
 
     return (
         <AuthenticatedLayout
@@ -23,7 +14,7 @@ export default function Dashboard() {
         >
             <Head title="Dashboard" />
 
-            asd
+         
         </AuthenticatedLayout>
     );
 }
