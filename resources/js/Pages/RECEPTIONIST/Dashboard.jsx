@@ -1,7 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -36,16 +35,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-
-
-
-
 function FileExplorer() {
     const [selectedYear, setSelectedYear] = useState(null)
     const [selectedMonth, setSelectedMonth] = useState(null)
-    
+  
     const currentDate = new Date()
     const currentYear = currentDate.getFullYear()
+    const currentMonth = currentDate.toLocaleString("default", { month: "long" })
+    const currentDay = currentDate.getDate()
   
     // Generate full months dynamically
     const generateMonths = (year) => {
@@ -70,29 +67,51 @@ function FileExplorer() {
       setSelectedMonth(null)
     }
   
-    // Dummy files grouped by date
-    const files = [
-      { name: "report1.pdf", date: "2025-02-18" },
-      { name: "notes.docx", date: "2025-02-18" },
-      { name: "summary.txt", date: "2025-02-17" },
-      { name: "data.xlsx", date: "2025-02-16" },
-    ]
-  
-    // Filter and sort files based on selected month and year
-    const filteredFiles = files.filter(file => {
-      const fileDate = new Date(file.date)
-      return (
-        fileDate.getFullYear() === selectedYear &&
-        fileDate.toLocaleString("default", { month: "long" }) === selectedMonth
-      )
-    }).sort((a, b) => new Date(b.date) - new Date(a.date))
+    // Sample files grouped by month with a specific date (you can replace with dynamic data)
+    const files = {
+      January: {
+        17: ["report1.pdf", "summary.docx"],
+        18: ["data.xlsx", "notes.docx"],
+      },
+      February: {
+        1: ["summary.docx"],
+        10: ["budget.xlsx"],
+      },
+      // Add more months and files as needed
+    }
   
     return (
       <div className="p-5 bg-white shadow-md rounded-lg mt-5">
         {/* Breadcrumb Navigation */}
-        <div className="mb-4 text-blue-500 cursor-pointer" onClick={resetNavigation}>
-          Home {selectedYear && `> ${selectedYear}`} {selectedMonth && `> ${selectedMonth}`}
-        </div>
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink className="cursor-pointer text-blue-500" onClick={resetNavigation}>
+                Home
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            {selectedYear && (
+              <>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbLink className="cursor-pointer text-blue-500" onClick={() => handleYearClick(selectedYear)}>
+                    {selectedYear}
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+              </>
+            )}
+            {selectedMonth && (
+              <>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbLink className="cursor-pointer text-blue-500" onClick={() => handleMonthClick(selectedMonth)}>
+                    {selectedMonth}
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+              </>
+            )}
+          </BreadcrumbList>
+        </Breadcrumb>
   
         {/* Year Selection */}
         {!selectedYear && (
@@ -124,41 +143,32 @@ function FileExplorer() {
           </div>
         )}
   
-        {/* Display Files (Grouped by Date) */}
+        {/* Display Files by Date */}
         {selectedMonth && (
           <div className="bg-gray-100 p-4 rounded-md mt-4">
             <h3 className="font-semibold mb-2">📄 Files for {selectedMonth}, {selectedYear}</h3>
-            {filteredFiles.length > 0 ? (
-              filteredFiles.reduce((grouped, file) => {
-                const fileDate = new Date(file.date).toLocaleDateString("en-US", {
-                  year: "numeric", month: "long", day: "numeric"
-                })
-                if (!grouped[fileDate]) grouped[fileDate] = []
-                grouped[fileDate].push(file)
-                return grouped
-              }, {})
-            ) : (<p>No files available.</p>)}
-            {
-              Object.entries(
-                filteredFiles.reduce((grouped, file) => {
-                  const fileDate = new Date(file.date).toLocaleDateString("en-US", {
-                    year: "numeric", month: "long", day: "numeric"
-                  })
-                  if (!grouped[fileDate]) grouped[fileDate] = []
-                  grouped[fileDate].push(file)
-                  return grouped
-                }, {})
-              ).map(([date, files]) => (
-                <div key={date} className="mb-4">
-                  <h4 className="font-semibold text-gray-600">{date}</h4>
+  
+            {/* Iterate over all days in the month */}
+            {Object.keys(files[selectedMonth] || {}).map((day) => {
+              const fileList = files[selectedMonth][day];
+              return (
+                <div key={day}>
+                  <h4 className="font-semibold">{day} {selectedMonth}, {selectedYear}</h4>
                   <ul>
-                    {files.map((file, index) => (
-                      <li key={index} className="p-2 bg-white shadow rounded-md mb-2">📄 {file.name}</li>
+                    {fileList.sort().map((file) => (
+                      <li key={file} className="p-2 bg-white shadow rounded-md mb-2">
+                        📄 {file}
+                      </li>
                     ))}
                   </ul>
                 </div>
-              ))
-            }
+              );
+            })}
+  
+            {/* No files message */}
+            {Object.keys(files[selectedMonth] || {}).length === 0 && (
+              <p>No files available for this month.</p>
+            )}
           </div>
         )}
       </div>
@@ -169,18 +179,13 @@ function FileExplorer() {
 
 
 
-=======
 import { useEffect, useState } from 'react';
->>>>>>> Stashed changes
-=======
+
 import { useEffect, useState } from 'react';
->>>>>>> Stashed changes
 
 export default function Dashboard() {
     const currentDate = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
     const handlePrint = () => {
         const printContent = document.querySelector(".printable-item").innerHTML;
         const originalContent = document.body.innerHTML;
@@ -190,9 +195,6 @@ export default function Dashboard() {
         document.body.innerHTML = originalContent;
         window.location.reload();
     };
-=======
-=======
->>>>>>> Stashed changes
     const [messages, setMessages] = useState([]);
 
     useEffect(() => {
@@ -209,10 +211,7 @@ export default function Dashboard() {
         }
     }, []);
 
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+
     return (
         <AuthenticatedLayout
             header={
@@ -223,8 +222,7 @@ export default function Dashboard() {
         >
             <Head title="Dashboard" />
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
+
             {/* <div className=''>
                 <p>
                     📂2024
@@ -239,9 +237,7 @@ export default function Dashboard() {
                     📂2021
                 </p> 
             </div> */}
-=======
-=======
->>>>>>> Stashed changes
+
             {/* <div className="w-full h-[11in] p-10 border shadow-lg bg-white mx-auto mt-3">
                 <div className="flex justify-between items-center mb-4">
                     <img src="storage/mswd.jpg" alt="Logo" className="w-20 h-20 mt-[-30px]" />
@@ -413,10 +409,7 @@ export default function Dashboard() {
                     <li key={index}>{msg}</li>
                 ))}
             </ul>
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+
         </AuthenticatedLayout>
     );
 }
