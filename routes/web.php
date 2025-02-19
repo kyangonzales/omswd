@@ -25,9 +25,14 @@ Route::get('/', function () {
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth', )->group(function () {
-    Route::post('send-message', [ChatController::class, 'sendMessage']);
-    Route::get('getUser', [RegisteredUserController::class, 'users'])->name('getUser');
-    Route::post('send-message', [ChatController::class, 'sendMessage']);
+
+
+
+    Route::get('/messengers', [ChatController::class, 'index'])->name('messages');
+    Route::post('/sendMessage', [ChatController::class, 'store'])->name('/sendMessage');
+
+
+    // Route::post('send-message', [ChatController::class, 'sendMessage']);
     Route::get('getUser', [RegisteredUserController::class, 'users'])->name('getUser');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

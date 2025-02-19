@@ -16,19 +16,13 @@ class MessageSent implements ShouldBroadcastNow
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $message;
-    public $time;
-    public $user;
-    public $sendTo;
 
     /**
      * Create a new event instance.
      */
-    public function __construct($message, $time, $user, $sendTo)
+    public function __construct($message)
     {
         $this->message = $message;
-        $this->time = $time;
-        $this->user = $user;
-        $this->sendTo = $sendTo;
     }
 
     /**
@@ -43,7 +37,8 @@ class MessageSent implements ShouldBroadcastNow
         // ];
         return [
             //  new Channel('chat'),
-            new Channel('chat.' . $this->sendTo),
+            // new Channel('chat.' . $this->message->reciever_id),
+            new Channel('chat.' . $this->message->receiver_id),
         ];
     }
 
