@@ -24,7 +24,7 @@ Route::get('/', function () {
 //     return Inertia::render('Dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth',)->group(function () {
+Route::middleware('auth', )->group(function () {
     Route::post('send-message', [ChatController::class, 'sendMessage']);
     Route::get('getUser', [RegisteredUserController::class, 'users'])->name('getUser');
     Route::post('send-message', [ChatController::class, 'sendMessage']);
@@ -45,21 +45,21 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         return Inertia::render('Admin/ManageUser');
     })->name('manage-user');
 
-    
+
     Route::get('messages', function () {
         return Inertia::render('Admin/Messages');
     })->name('messages');
 
-    Route::post('createUser',[RegisteredUserController::class, 'createUser'])->name('createUser');
-    Route::delete('deleteUser/{id}',[RegisteredUserController::class, 'deleteUser'])->name('deleteUser');
+    Route::post('createUser', [RegisteredUserController::class, 'createUser'])->name('createUser');
+    Route::delete('deleteUser/{id}', [RegisteredUserController::class, 'deleteUser'])->name('deleteUser');
 
-    
+
     Route::get('messages', function () {
         return Inertia::render('Admin/Messages');
     })->name('messages');
 
-    Route::post('createUser',[RegisteredUserController::class, 'createUser'])->name('createUser');
-    Route::delete('deleteUser/{id}',[RegisteredUserController::class, 'deleteUser'])->name('deleteUser');
+    Route::post('createUser', [RegisteredUserController::class, 'createUser'])->name('createUser');
+    Route::delete('deleteUser/{id}', [RegisteredUserController::class, 'deleteUser'])->name('deleteUser');
 
     // Route::get('settings', function () {
     //     return Inertia::render('Admin/Settings');
@@ -76,7 +76,7 @@ Route::middleware(['auth', 'role:receptionist'])->group(function () {
     Route::get('/receptionist/dashboard', function () {
         return Inertia::render('RECEPTIONIST/Dashboard');
     })->name('receptionist.dashboard');
-    
+
 
     Route::get('receptionist/messages', function () {
         return Inertia::render('RECEPTIONIST/Messages');
@@ -106,7 +106,7 @@ Route::middleware(['auth', 'role:osca_admin'])->group(function () {
     Route::get('/osca/dashboard', function () {
         return Inertia::render('OSCA/Dashboard');
     })->name('osca.dashboard');
-    
+
 
     Route::get('osca/messages', function () {
         return Inertia::render('OSCA/Messages');
@@ -127,5 +127,4 @@ Route::middleware(['auth', 'role:lydo_aics_admin'])->get('/lydo/dashboard', func
 // })->name('receptionist.dashboard');
 
 
-require __DIR__.'/auth.php';
-
+require __DIR__ . '/auth.php';
