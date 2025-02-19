@@ -27,6 +27,12 @@ class UserSeeder extends Seeder
             'role' => 'lydo_aics_admin'
         ]);
         User::create([
+            'name' => 'Francis',
+            'email' => 'lydo@gmail.com',
+            'password' => Hash::make('password'),
+            'role' => 'lydo_admin'
+        ]);
+        User::create([
             'name' => 'Lorie',
             'email' => 'lorie@gmail.com',
             'password' => Hash::make('password'),

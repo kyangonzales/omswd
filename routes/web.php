@@ -50,6 +50,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         return Inertia::render('Admin/ManageUser');
     })->name('manage-user');
 
+    Route::get('request', function () {
+        return Inertia::render('Admin/Request');
+    })->name('request');
 
     Route::get('messages', function () {
         return Inertia::render('Admin/Messages');
@@ -65,13 +68,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::post('createUser', [RegisteredUserController::class, 'createUser'])->name('createUser');
     Route::delete('deleteUser/{id}', [RegisteredUserController::class, 'deleteUser'])->name('deleteUser');
+    Route::get('/inquireLists', [InquiriesController::class, 'index'])->name('inquireLists');
 
-    // Route::get('settings', function () {
-    //     return Inertia::render('Admin/Settings');
-    // })->name('settings');s
-
-
-    // Route::post('send-message', [ChatController::class, 'sendMessage']);
 
 });
 
@@ -98,9 +96,26 @@ Route::middleware(['auth', 'role:receptionist'])->group(function () {
 });
 
 
-Route::middleware(['auth', 'role:lydo_admin'])->get('/lydo/dashboard', function () {
-    return Inertia::render('LYDO/Dashboard');
-})->name('lydo.dashboard');
+// Route::middleware(['auth', 'role:lydo_admin'])->get('/lydo/dashboard', function () {
+//     return Inertia::render('LYDO/Dashboard');
+// })->name('lydo.dashboard');
+
+
+Route::middleware(['auth', 'role:lydo_aics_admin'])->group(function () {
+
+    Route::get('lydo/dashboard', function () {
+        return Inertia::render('LYDO/Dashboard');
+    })->name('lydo.dashboard');
+
+    Route::get('lydo/request', function () {
+        return Inertia::render('LYDO/Request');
+    })->name('lydo.request');
+
+
+
+    // Route::get('/oscaList', [InquiriesController::class, 'selectOsca'])->name('oscaList');
+
+});
 
 Route::middleware(['auth', 'role:aics_admin'])->get('/aics/dashboard', function () {
     return Inertia::render('AICS/Dashboard');
@@ -128,13 +143,25 @@ Route::middleware(['auth', 'role:pdao_admin'])->get('/pdao/dashboard', function 
     return Inertia::render('PDAO/Dashboard');
 })->name('pdao.dashboard');
 
-Route::middleware(['auth', 'role:lydo_aics_admin'])->get('/lydo/dashboard', function () {
-    return Inertia::render('LYDO/Dashboard');
-})->name('lydo.dashboard');
 
-// Route::middleware(['auth', 'role:receptionist'])->get('/receptionist/dashboard', function () {
-//     return Inertia::render('RECEPTIONIST/Dashboard');
-// })->name('receptionist.dashboard');
+
+
+Route::middleware(['auth', 'role:lydo_admin'])->group(function () {
+
+    Route::get('lydo/dashboard', function () {
+        return Inertia::render('LYDO/Dashboard');
+    })->name('lydo.dashboard');
+
+    Route::get('lydo/request', function () {
+        return Inertia::render('LYDO/Request');
+    })->name('lydo.request');
+
+
+
+    // Route::get('/oscaList', [InquiriesController::class, 'selectOsca'])->name('oscaList');
+
+});
+
 
 
 require __DIR__ . '/auth.php';

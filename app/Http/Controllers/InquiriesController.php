@@ -28,6 +28,15 @@ class InquiriesController extends Controller
             'payload' => $data
         ], 200);
     }
+
+    public function selectLydo()
+    {
+        $data = Inquiries::where('unit_concern', "Senior Citizen's Affairs (OSCA)")->get();
+        $data->load('familyMembers');
+        return response()->json([
+            'payload' => $data
+        ], 200);
+    }
     /**
      * Show the form for creating a new resource.
      */

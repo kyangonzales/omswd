@@ -5,9 +5,15 @@ export function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
 
-export function formatWord(name) {
-  return name.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
-}
+// export function formatWord(name) {
+//   return name.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
+// }
+export const formatWord = (word) => {
+  if (!word || typeof word !== "string") {
+      return ""; // Magbalik ng empty string kung undefined, null, o hindi string
+  }
+  return word.toLowerCase();
+};
 
 export function formatDateTime(isoString) {
   const date = new Date(isoString);

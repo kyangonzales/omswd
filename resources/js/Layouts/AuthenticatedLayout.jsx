@@ -26,6 +26,26 @@ export default function AuthenticatedLayout({ header, children }) {
     const [notification, setNotification] = useState([]);
     const [newMessage, setNewMessage] = useState(null); // Track new message
 
+    // const linkRoute = {
+    //     "Case Study Report": "lydo.request",
+    //     "Aid to Individual in Crisis (AICS)":  "aics.request",
+    //     "Special Cases":  "osca.request",
+    //     "Person with Disability (PWD)":  "pdao.request",
+    //     "Solo Parent":  "lydo.request",
+    //     "Local Youth Development Office (LYDO)":  "lydo.request",
+    //     "Senior Citizen's Affairs (OSCA)":  "osca.request",
+    //     "Referral (Indigency, Ambulance, Philhealth, LCR, PAO)":  "aics.request",
+    // };
+    
+    // // Example usage:
+    // const getRoute = (unitConcern) => linkRoute[unitConcern];
+
+    // console.log(getRoute("Senior Citizen's Affairs (OSCA)"));
+    
+    
+  
+    
+
     useEffect(() => {
         if (!window.Echo || !user?.id) return; // Ensure Echo is available and user exists
 
@@ -55,8 +75,9 @@ export default function AuthenticatedLayout({ header, children }) {
                 action: {
                     label: "Open", // Text of the button
                     onClick: () => {
-                        router.visit('osca.request')
-                        // You can navigate or open a modal here
+                            localStorage.setItem('dataToPrint', JSON.stringify(newMessage));
+                            router.visit("request")
+                            
                     },}
             });
         }
@@ -68,12 +89,13 @@ export default function AuthenticatedLayout({ header, children }) {
             { label: "Dashboard", url: "dashboard", icon: LayoutDashboardIcon },
             { label: "User Management", url: "manage-user", icon: User },
             { label: "Messages", url: "messages", icon: MessageCircle },
+            { label: "Request", url: "request", icon: GitPullRequest },
             { label: "Analytics", url: "#", icon: ChartNoAxesCombined },
             { label: "Settings", url: "#", icon: Settings2 },
         ],
         lydo_admin: [
             { label: "Dashboard", url: "#", icon: LayoutDashboardIcon },
-            { label: "Request", url: "#", icon: GitPullRequest },
+            { label: "Request", url: "/lydo/request", icon: GitPullRequest },
             { label: "Messages", url: "manage-user", icon: MessageCircle },
             { label: "Account", url: "#", icon: UserRoundPen },
             { label: "Settings", url: "#", icon: Settings2 },

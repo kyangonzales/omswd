@@ -16,7 +16,7 @@ export default function Request() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get("/oscaList");
+                const res = await axios.get("/inquireLists");
                 console.log("res", res.data.payload);
 
                 
