@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Inquiries;
+use App\Events\RequestSent;
 use App\Models\FamilyMember;
 use Illuminate\Http\Request;
 
@@ -32,6 +34,8 @@ class InquiriesController extends Controller
      */
     public function store(Request $request)
     {
+
+        $unit_concern = $request->unitConcern;
         // Create the inquiry entry
         $data = Inquiries::create([
             'fullname' => $request->name,
@@ -70,6 +74,33 @@ class InquiriesController extends Controller
 
 
         $data->load('familyMembers');
+
+        $userIds = [];
+
+        if ($unit_concern === "Case Study Report") {
+            $users = User::where('role', 'osca_admin')->get();
+        } elseif ($unit_concern === "Aid to Individual in Crisis (AICS)") {
+            $users = User::where('role', 'aics_admin')->get();
+        } elseif ($unit_concern === "Special Cases") {
+            $users = User::where('role', 'osca_admin')->get();
+        } elseif ($unit_concern === "Person with Disability (PWD)") {
+            $users = User::where('role', 'pdao_admin')->get();
+        } elseif ($unit_concern === "Solo Parent") {
+            $users = User::where('role', 'lydo_admin')->get();
+        } elseif ($unit_concern === "Local Youth Development Office (LYDO)") {
+            $users = User::where('role', 'lydo_admin')->get();
+        } elseif ($unit_concern === "Senior Citizen's Affairs (OSCA)") {
+            $users = User::where('role', 'osca_admin')->get();
+        } elseif ($unit_concern === "Referral (Indigency, Ambulance, Philhealth, LCR, PAO)") {
+            $users = User::where('role', 'lydo_admin')->get();
+        }
+        
+        // Extract user IDs
+        $userIds = $users->pluck('id')->toArray();
+        
+        
+
+        broadcast(new RequestSent($data,$userIds))->toOthers();
     
         return response()->json(['message' => 'Inquiry saved successfully', 'payload' => $data ], 201);
     }

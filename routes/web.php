@@ -88,7 +88,7 @@ Route::middleware(['auth', 'role:receptionist'])->group(function () {
 
 
     Route::post('inquire', [InquiriesController::class, 'store'])->name('inquire');
-    Route::get('inquireList', [InquiriesController::class, 'index'])->name('inquireList');
+    Route::get('/inquireList', [InquiriesController::class, 'index'])->name('inquireList');
 
 });
 

@@ -1,11 +1,7 @@
 import { AppSidebar } from "@/Components/app-sidebar";
-import ApplicationLogo from "@/Components/ApplicationLogo";
-import Dropdown from "@/Components/Dropdown";
-import NavLink from "@/Components/NavLink";
-import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
 import { SidebarProvider, SidebarTrigger } from "@/Components/ui/sidebar";
 import { Link, usePage } from "@inertiajs/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     Calendar,
     ChartNoAxesCombined,
@@ -20,11 +16,30 @@ import {
     User,
     UserRoundPen,
 } from "lucide-react";
+import Echo from "laravel-echo";
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
+     useEffect(() => {
+            // if (window.Echo) {
+                const channel = window.Echo.channel(`request.${user.id}`);
+                channel.listen(".request.sent", (event) => {
+                    console.log("New message received:", event);
+                    // setMessages([...messages, event]);
+                });
+                // return () => {
+                //     window.Echo.leaveChannel(`chat.${user.id}`);
+                // };
+                // window.Echo.private(`request.${user.id}`)
+                // .listen('RequestSent', (event) => {
+                //     console.log('New request received:', event.data);
+                // });
+            // }
+        }, []);
+
+
     const routesByUser = {
         admin: [
-            { label: "Dashboard", url: "#", icon: LayoutDashboardIcon },
+            { label: "Dashboard", url: "dashboard", icon: LayoutDashboardIcon },
             { label: "User Management", url: "manage-user", icon: User },
             { label: "Messages", url: "messages", icon: MessageCircle },
             { label: "Analytics", url: "#", icon: ChartNoAxesCombined },

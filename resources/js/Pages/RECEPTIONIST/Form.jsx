@@ -53,28 +53,28 @@ export default function Form({handleSelectChange,currentDate, handleSubmit, hand
                                     <SelectValue placeholder="Select Office" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="case_study">
+                                    <SelectItem value="Case Study Report">
                                         Case Study Report
                                     </SelectItem>
-                                    <SelectItem value="aics">
+                                    <SelectItem value="Aid to Individual in Crisis (AICS)">
                                         Aid to Individual in Crisis (AICS)
                                     </SelectItem>
-                                    <SelectItem value="special_cases">
+                                    <SelectItem value="Special Cases">
                                         Special Cases
                                     </SelectItem>
-                                    <SelectItem value="pwd">
+                                    <SelectItem value="Person with Disability (PWD)">
                                         Person with Disability (PWD)
                                     </SelectItem>
-                                    <SelectItem value="solo_parent">
+                                    <SelectItem value="Solo Parent">
                                         Solo Parent
                                     </SelectItem>
-                                    <SelectItem value="lydo">
+                                    <SelectItem value="Local Youth Development Office (LYDO)">
                                         Local Youth Development Office (LYDO)
                                     </SelectItem>
-                                    <SelectItem value="osca">
+                                    <SelectItem value="Senior Citizen's Affairs (OSCA)">
                                         Senior Citizen's Affairs (OSCA)
                                     </SelectItem>
-                                    <SelectItem value="referral">
+                                    <SelectItem value="Referral (Indigency, Ambulance, Philhealth, LCR, PAO)">
                                         Referral (Indigency, Ambulance,
                                         Philhealth, LCR, PAO)
                                     </SelectItem>

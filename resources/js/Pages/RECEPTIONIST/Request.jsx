@@ -30,8 +30,10 @@ export default function Request() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get("inquireList");
-                setInquiryList(res.payload);
+                const res = await axios.get("/inquireList");
+                console.log(res);
+                
+                setInquiryList(res.data.payload);
             } catch (error) {}
         };
         fetchData();
@@ -130,6 +132,7 @@ export default function Request() {
         console.log(formData);
         try {
             const res = await axios.post("/inquire", formData);
+            console.log(res)
         } catch (error) {
             console.log(error);
         }
@@ -150,12 +153,13 @@ export default function Request() {
 					<Input placeholder="Search..." className="w-2/6"/>
 					<Button onClick={()=>setContent('request')}>Request</Button>
 				</div>
-                <div className="w-full pl-3 pr-3">
-				<Table className="border">
+              
+				<div className="w-full pl-3 pr-3">
+                <Table className="border">
 					{inquiryList.length === 0 ?  <TableCaption>No record.</TableCaption>: <></>}
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="w-[100px]">Name</TableHead>
+                            <TableHead className="">Name</TableHead>
                             <TableHead>Status</TableHead>
                             <TableHead>Method</TableHead>
                             <TableHead className="text-right">Action</TableHead>
@@ -165,7 +169,7 @@ export default function Request() {
                         {inquiryList.map((items, index) => (
                             <TableRow key={index}>
                                 <TableCell className="font-medium">
-                                    INV001
+                                    {items.unit_concern}
                                 </TableCell>
                                 <TableCell>Paid</TableCell>
                                 <TableCell>Credit Card</TableCell>
@@ -176,7 +180,8 @@ export default function Request() {
                         ))}
                     </TableBody>
                 </Table>
-				</div>
+                </div>
+
             </AuthenticatedLayout>
         );
     }

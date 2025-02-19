@@ -14,3 +14,8 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 Broadcast::channel('chat.{id}', function ($user) {
     return (int) $user->id === (int) $id; // Ensure the user can access their own private channel
 });
+
+Broadcast::channel('request.{userId}', function ($user, $userId) {
+    return (int) $user->id === (int) $userId;
+});
+
