@@ -112,10 +112,15 @@ Route::middleware(['auth', 'role:osca_admin'])->group(function () {
         return Inertia::render('OSCA/Dashboard');
     })->name('osca.dashboard');
 
+    Route::get('osca/request', function () {
+        return Inertia::render('OSCA/Request');
+    })->name('osca.request');
 
     Route::get('osca/messages', function () {
         return Inertia::render('OSCA/Messages');
     })->name('osca.messages');
+
+    Route::get('/oscaList', [InquiriesController::class, 'selectOsca'])->name('oscaList');
 
 });
 

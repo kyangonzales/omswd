@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, Eye, Trash2 } from "lucide-react";
 import axios from "axios";
-import Form from "./Form";
 import {Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table";
 import { formatDateTime, formatWord } from "@/lib/utils";
 import PrintableForm from "@/Components/PrintableForm";
@@ -17,114 +16,16 @@ export default function Request() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get("/inquireList");
-                console.log(res);
+                const res = await axios.get("/oscaList");
+                console.log("res", res.data.payload);
+
                 
                 setInquiryList(res.data.payload);
             } catch (error) {}
         };
         fetchData();
     }, []);
-    const currentDate = new Date().toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-    });
 
-    const [formData, setFormData] = useState({
-        unitConcern: "",
-        name: "",
-        bday: "",
-        contactNumber: "",
-        houseNumber: "",
-        purok: "",
-        barangay: "",
-        education: "",
-        sex: "",
-        civilStatus: "",
-        religion: "",
-        occupation: "",
-        income: "",
-        remarks: "",
-        familyMembers: [
-            {
-                name: "",
-                relationship: "",
-                birthdate: "",
-                sex: "",
-                civilStatus: "",
-                education: "",
-                occupation: "",
-                income: "",
-            },
-        ],
-    });
-
-    const handleSelectChange = (name, value) => {
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
-    };
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
-    };
-    const handleFamilyChange = (index, e) => {
-        const { name, value } = e.target;
-        const updatedFamilyMembers = [...formData.familyMembers];
-        updatedFamilyMembers[index] = {
-            ...updatedFamilyMembers[index],
-            [name]: value,
-        };
-        setFormData((prevData) => ({
-            ...prevData,
-            familyMembers: updatedFamilyMembers,
-        }));
-    };
-
-    const handleAddFamilyMember = () => {
-        setFormData((prevData) => ({
-            ...prevData,
-            familyMembers: [
-                ...prevData.familyMembers,
-                {
-                    name: "",
-                    relationship: "",
-                    age: "",
-                    sex: "",
-                    civilStatus: "",
-                    education: "",
-                    occupation: "",
-                    income: "",
-                },
-            ],
-        }));
-    };
-    const handleDeleteFamilyMember = (index) => {
-        const updatedFamilyMembers = formData.familyMembers.filter(
-            (_, i) => i !== index
-        );
-        setFormData((prevData) => ({
-            ...prevData,
-            familyMembers: updatedFamilyMembers,
-        }));
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        console.log(formData);
-        try {
-            const res = await axios.post("/inquire", formData);
-            console.log(res)
-            setContent("main")
-        } catch (error) {
-            console.log(error);
-        }
-    };
     const [viewData, setViewData] = useState();
     const handleView = (data)=>{
         console.log(data)
@@ -145,7 +46,6 @@ export default function Request() {
 				<h1 className="p-3 font-bold text-2xl pt-10">Inquiries</h1>
 				<div className="w-full flex justify-between p-3">
 					<Input placeholder="Search..." className="w-2/6"/>
-					<Button onClick={()=>setContent('request')}>Request</Button>
 				</div>
               
 				<div className="w-full pl-3 pr-3">
@@ -206,17 +106,7 @@ export default function Request() {
             >
                 <Head title="Request" />
 				<Button onClick={()=>setContent('main')}><ChevronLeft /></Button>
-                <Form
-                    handleSelectChange={handleSelectChange}
-                    handleSubmit={handleSubmit}
-                    handleChange={handleChange}
-                    handleAddFamilyMember={handleAddFamilyMember}
-                    handleDeleteFamilyMember={handleDeleteFamilyMember}
-                    handleFamilyChange={handleFamilyChange}
-                    formData={formData}
-                    setFormData={setFormData}
-                    currentDate={currentDate}
-                />
+
             </AuthenticatedLayout>
         );
     }
