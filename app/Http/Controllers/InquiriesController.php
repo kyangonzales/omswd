@@ -18,9 +18,16 @@ class InquiriesController extends Controller
         $data = Inquiries::all()->load('familyMembers');
         return response()->json([
             'payload' => $data
-        ],200);
+        ], 200);
     }
-
+    public function selectOsca()
+    {
+        $data = Inquiries::where('unit_concern', "Senior Citizen's Affairs (OSCA)")->get();
+        $data->load('familyMembers');
+        return response()->json([
+            'payload' => $data
+        ], 200);
+    }
     /**
      * Show the form for creating a new resource.
      */
@@ -51,10 +58,10 @@ class InquiriesController extends Controller
             'income' => $request->income,
             'remarks' => $request->remarks,
         ]);
-    
+
         // Get the generated inquiry ID
         $inquiry_id = $data->id;
-    
+
         // Check if familyMembers is provided and is an array
         if ($request->has('familyMembers') && is_array($request->familyMembers)) {
             foreach ($request->familyMembers as $member) {
@@ -86,20 +93,20 @@ class InquiriesController extends Controller
             "Senior Citizen's Affairs (OSCA)" => "osca_admin",
             "Referral (Indigency, Ambulance, Philhealth, LCR, PAO)" => "lydo_admin",
         ];
-        
+
         // Get the role for the given unit_concern
         $role = $roleMapping[$unit_concern] ?? null;
-        
+
         if ($role) {
             $users = User::whereIn('role', [$role, 'admin'])->get();
             $userIds = $users->pluck('id')->toArray();
-        }        
+        }
 
-        broadcast(new RequestSent($data,$userIds))->toOthers();
-    
-        return response()->json(['message' => 'Inquiry saved successfully', 'payload' => $data ], 201);
+        broadcast(new RequestSent($data, $userIds))->toOthers();
+
+        return response()->json(['message' => 'Inquiry saved successfully', 'payload' => $data], 201);
     }
-    
+
 
     /**
      * Display the specified resource.

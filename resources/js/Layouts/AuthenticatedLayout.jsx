@@ -79,8 +79,8 @@ export default function AuthenticatedLayout({ header, children }) {
             { label: "Settings", url: "#", icon: Settings2 },
         ],
         osca_admin: [
-            { label: "Dashboard", url: "#", icon: LayoutDashboardIcon },
-            { label: "Request", url: "#", icon: GitPullRequest },
+            { label: "Dashboard", url: "/osca/dashboard", icon: LayoutDashboardIcon },
+            { label: "Request", url: "/osca/request", icon: GitPullRequest },
             { label: "Messages", url: "/osca/messages", icon: MessageCircle },
             { label: "Account", url: "#", icon: UserRoundPen },
             { label: "Settings", url: "#", icon: Settings2 },
