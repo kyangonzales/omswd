@@ -3,14 +3,15 @@
 namespace App\Events;
 
 use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 
-class RequestSent implements ShouldBroadcast
+class RequestSent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -36,11 +37,22 @@ class RequestSent implements ShouldBroadcast
         // return [
         //     new PrivateChannel('request'),
         // ];
-        return collect($this->userIds)->map(fn($id) => new Channel("request.{$id}"))->toArray();
+        
+        // return collect($this->userIds)->map(fn($id) => new Channel("request.{$id}"))->toArray();
+        return collect($this->userIds)->map(function ($id) {
+            return new Channel("request." .$id);
+        })->toArray();
     }
 
     public function broadcastAs()
     {
         return 'request.sent';
+    }
+
+    public function broadcastWith()
+    {
+        return [
+            'data' => $this->data
+        ];
     }
 }

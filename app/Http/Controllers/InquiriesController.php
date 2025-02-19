@@ -74,31 +74,26 @@ class InquiriesController extends Controller
 
 
         $data->load('familyMembers');
-
         $userIds = [];
 
-        if ($unit_concern === "Case Study Report") {
-            $users = User::where('role', 'osca_admin')->get();
-        } elseif ($unit_concern === "Aid to Individual in Crisis (AICS)") {
-            $users = User::where('role', 'aics_admin')->get();
-        } elseif ($unit_concern === "Special Cases") {
-            $users = User::where('role', 'osca_admin')->get();
-        } elseif ($unit_concern === "Person with Disability (PWD)") {
-            $users = User::where('role', 'pdao_admin')->get();
-        } elseif ($unit_concern === "Solo Parent") {
-            $users = User::where('role', 'lydo_admin')->get();
-        } elseif ($unit_concern === "Local Youth Development Office (LYDO)") {
-            $users = User::where('role', 'lydo_admin')->get();
-        } elseif ($unit_concern === "Senior Citizen's Affairs (OSCA)") {
-            $users = User::where('role', 'osca_admin')->get();
-        } elseif ($unit_concern === "Referral (Indigency, Ambulance, Philhealth, LCR, PAO)") {
-            $users = User::where('role', 'lydo_admin')->get();
-        }
+        $roleMapping = [
+            "Case Study Report" => "osca_admin",
+            "Aid to Individual in Crisis (AICS)" => "aics_admin",
+            "Special Cases" => "osca_admin",
+            "Person with Disability (PWD)" => "pdao_admin",
+            "Solo Parent" => "lydo_admin",
+            "Local Youth Development Office (LYDO)" => "lydo_admin",
+            "Senior Citizen's Affairs (OSCA)" => "osca_admin",
+            "Referral (Indigency, Ambulance, Philhealth, LCR, PAO)" => "lydo_admin",
+        ];
         
-        // Extract user IDs
-        $userIds = $users->pluck('id')->toArray();
+        // Get the role for the given unit_concern
+        $role = $roleMapping[$unit_concern] ?? null;
         
-        
+        if ($role) {
+            $users = User::whereIn('role', [$role, 'admin'])->get();
+            $userIds = $users->pluck('id')->toArray();
+        }        
 
         broadcast(new RequestSent($data,$userIds))->toOthers();
     

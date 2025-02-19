@@ -73,7 +73,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
 
 Route::middleware(['auth', 'role:receptionist'])->group(function () {
-    Route::get('/receptionist/dashboard', function () {
+    Route::get('receptionist/dashboard', function () {
         return Inertia::render('RECEPTIONIST/Dashboard');
     })->name('receptionist.dashboard');
 
@@ -103,7 +103,7 @@ Route::middleware(['auth', 'role:aics_admin'])->get('/aics/dashboard', function 
 
 
 Route::middleware(['auth', 'role:osca_admin'])->group(function () {
-    Route::get('/osca/dashboard', function () {
+    Route::get('osca/dashboard', function () {
         return Inertia::render('OSCA/Dashboard');
     })->name('osca.dashboard');
 

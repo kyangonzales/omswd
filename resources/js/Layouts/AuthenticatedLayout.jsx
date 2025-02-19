@@ -16,25 +16,51 @@ import {
     User,
     UserRoundPen,
 } from "lucide-react";
-import Echo from "laravel-echo";
+import { Toaster } from "sonner";
+import { toast } from "sonner"
+import { router } from "@inertiajs/react";
+
+
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
-     useEffect(() => {
-            // if (window.Echo) {
-                const channel = window.Echo.channel(`request.${user.id}`);
-                channel.listen(".request.sent", (event) => {
-                    console.log("New message received:", event);
-                    // setMessages([...messages, event]);
-                });
-                // return () => {
-                //     window.Echo.leaveChannel(`chat.${user.id}`);
-                // };
-                // window.Echo.private(`request.${user.id}`)
-                // .listen('RequestSent', (event) => {
-                //     console.log('New request received:', event.data);
-                // });
-            // }
-        }, []);
+    const [notification, setNotification] = useState([]);
+    const [newMessage, setNewMessage] = useState(null); // Track new message
+
+    useEffect(() => {
+        if (!window.Echo || !user?.id) return; // Ensure Echo is available and user exists
+
+        const channel = window.Echo.channel(`request.${user.id}`);
+
+        const listener = (event) => {
+            console.log("New message received:", event.data);
+            setNewMessage(event.data); // Update newMessage state to trigger re-run
+        };
+
+        channel.listen(".request.sent", listener);
+
+        return () => {
+            channel.stopListening(".request.sent");
+        };
+    }, [user?.id]); // Runs when user.id changes
+
+    // This useEffect will re-run whenever newMessage changes
+    useEffect(() => {
+        if (newMessage) {
+            setNotification((prevMessages) => [...prevMessages, newMessage]); // Append new event
+             // Show toast notification for each new message
+             toast.info("New Request", {
+                description: newMessage.unit_concern || "You have a new notification!",
+                duration: 15000, // Auto-dismiss in 5 seconds
+                position: "top-right", // Change position if needed
+                action: {
+                    label: "Open", // Text of the button
+                    onClick: () => {
+                        router.visit('osca.request')
+                        // You can navigate or open a modal here
+                    },}
+            });
+        }
+    }, [newMessage]); // Runs when newMessage updates
 
 
     const routesByUser = {
@@ -88,6 +114,11 @@ export default function AuthenticatedLayout({ header, children }) {
         <div className="min-h-screen flex">
             <SidebarProvider>
                 <AppSidebar routes={routes} user={user} />
+                <Toaster 
+                 toastOptions={{
+                    className: "w-full  mb-3 font-sans text-base shadow-", // Adjust width, height & padding
+                  }}
+                />
                 <main className="w-full ">{children}</main>
             </SidebarProvider>
         </div>
