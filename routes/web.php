@@ -8,6 +8,7 @@ use Illuminate\Foundation\Application;
 use App\Http\Controllers\ChatController;
 use Illuminate\Support\Facades\Broadcast;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\InquiriesController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 
 Route::get('/', function () {
@@ -84,6 +85,10 @@ Route::middleware(['auth', 'role:receptionist'])->group(function () {
     Route::get('receptionist/request', function () {
         return Inertia::render('RECEPTIONIST/Request');
     })->name('receptionist.request');
+
+
+    Route::post('inquire', [InquiriesController::class, 'store'])->name('inquire');
+    Route::get('inquireList', [InquiriesController::class, 'index'])->name('inquireList');
 
 });
 

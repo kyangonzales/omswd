@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Inquiries;
+use App\Models\FamilyMember;
 use Illuminate\Http\Request;
 
 class InquiriesController extends Controller
@@ -12,7 +13,10 @@ class InquiriesController extends Controller
      */
     public function index()
     {
-        //
+        $data = Inquiries::all()->load('familyMembers');
+        return response()->json([
+            'payload' => $data
+        ],200);
     }
 
     /**
@@ -28,8 +32,48 @@ class InquiriesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Create the inquiry entry
+        $data = Inquiries::create([
+            'fullname' => $request->name,
+            'unit_concern' => $request->unitConcern,
+            'address' => $request->houseNumber . " " . $request->purok . " " . $request->barangay,
+            'contact_number' => $request->contactNumber,
+            'birthdate' => $request->bday,
+            'sex' => $request->sex,
+            'religion' => $request->religion,
+            'civil_status' => $request->civilStatus,
+            'educ_attain' => $request->education,
+            'occupation' => $request->occupation,
+            'income' => $request->income,
+            'remarks' => $request->remarks,
+        ]);
+    
+        // Get the generated inquiry ID
+        $inquiry_id = $data->id;
+    
+        // Check if familyMembers is provided and is an array
+        if ($request->has('familyMembers') && is_array($request->familyMembers)) {
+            foreach ($request->familyMembers as $member) {
+                FamilyMember::create([
+                    'inquiry_id' => $inquiry_id, // Assuming there's a foreign key in FamilyMember
+                    'fullname' => $member['name'] ?? null,
+                    'birthdate' => $member['birthdate'] ?? null,
+                    'sex' => $member['sex'] ?? null,
+                    'civil_status' => $member['civilStatus'] ?? null,
+                    'relation_to_client' => $member['relationship'] ?? null,
+                    'educ_attain' => $member['education'] ?? null,
+                    'occupation' => $member['occupation'] ?? null,
+                    'income' => $member['income'] ?? null,
+                ]);
+            }
+        }
+
+
+        $data->load('familyMembers');
+    
+        return response()->json(['message' => 'Inquiry saved successfully', 'payload' => $data ], 201);
     }
+    
 
     /**
      * Display the specified resource.

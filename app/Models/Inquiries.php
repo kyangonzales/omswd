@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\FamilyMember;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Inquiries extends Model
 {
