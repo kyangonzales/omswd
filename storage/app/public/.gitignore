@@ -1,1 +1,5 @@
-storage/images/
+!public/
+!public/*.png
+!public/*.jpg
+!public/*.jpeg
+!public/*.gif
