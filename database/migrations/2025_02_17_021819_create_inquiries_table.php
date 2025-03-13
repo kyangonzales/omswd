@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('fullname');
             $table->string('unit_concern');
-            $table->string('address');
+            $table->string('house_number')->nullable();
+            $table->string('purok');
+            $table->string('barangay');
             $table->string('contact_number');
             $table->string('birthdate');
             $table->string('sex');
@@ -24,6 +26,7 @@ return new class extends Migration
             $table->string('educ_attain');
             $table->string('occupation');
             $table->string('income');
+            $table->string('status');
             $table->text('remarks')->nullable();
             $table->timestamps();
         });

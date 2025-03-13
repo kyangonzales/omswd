@@ -115,6 +115,7 @@ export default function ManageUser({ auth }) {
                         <TableRow>
                             <TableHead className="w-[50px] pl-5">ID</TableHead>
                             <TableHead>Fullname</TableHead>
+                            <TableHead>Email</TableHead>
                             <TableHead>Role</TableHead>
                             <TableHead></TableHead>
                         </TableRow>
@@ -126,6 +127,7 @@ export default function ManageUser({ auth }) {
                                     {items.id}
                                 </TableCell>
                                 <TableCell>{items.name}</TableCell>
+                                <TableCell>{items.email}</TableCell>
                                 <TableCell>{items.role}</TableCell>
                                 <TableCell className="flex gap-x-2 justify-end items-center">
                                     <Button className="bg-blue-800">
@@ -187,6 +189,9 @@ export default function ManageUser({ auth }) {
                                     </SelectItem>
                                     <SelectItem value="lydo_aics_admin">
                                         LYDO & AICS (Admin)
+                                    </SelectItem>
+                                    <SelectItem value="pdao_admin">
+                                        PDAO (Admin)
                                     </SelectItem>
                                     <SelectItem value="receptionist">
                                         Receptionist

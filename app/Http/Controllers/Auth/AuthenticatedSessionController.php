@@ -48,7 +48,7 @@ class AuthenticatedSessionController extends Controller
         'aics_admin' => redirect()->intended(route('aics.dashboard')),
         'osca_admin' => redirect()->intended(route('osca.dashboard')),
         'pdao_admin' => redirect()->intended(route('pdao.dashboard')),
-        'lydo_aics_admin' => redirect()->intended(route('lydo.dashboard')),
+        'lydo_aics_admin' => redirect()->intended(route('lydo_acis.dashboard')),
         'receptionist' => redirect()->intended(route('receptionist.dashboard')),
         // default => redirect()->intended(route('dashboard')),
     };

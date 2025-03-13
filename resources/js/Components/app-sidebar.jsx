@@ -13,13 +13,13 @@ import { NavUser } from "./nav-user";
 import { Link } from "@inertiajs/react";
 import { Handshake } from "lucide-react";
 
-export function AppSidebar({ routes, user }) {
+export function AppSidebar({ routes, user, total }) {
     return (
         <Sidebar>
             <SidebarContent>
                 <SidebarGroup>
                     <SidebarGroupLabel>
-                        <Handshake /> OMSWD
+                        <Handshake /> MSWD ASSISTANCE
                     </SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
@@ -27,8 +27,17 @@ export function AppSidebar({ routes, user }) {
                                 <SidebarMenuItem key={item.label}>
                                     <SidebarMenuButton asChild>
                                         <Link href={item.url}>
-                                            <item.icon />
-                                            <span>{item.label}</span>
+                                            <div className="w-full flex justify-between items-center">
+                                                <div className="w-full flex gap-x-1 items-center">
+                                                    <item.icon className="h-5 w-5" />
+                                                    <span>{item.label}</span>
+                                                </div>
+                                                {item.label == "Messages" ? 
+                                                <div className="flex items-center p-1 justify-center h-5 w-5 rounded-full bg-sky-700 text-white text-xs font-light">
+                                                {total}
+                                            </div>
+                                                : <></>}
+                                            </div>
                                         </Link>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>

@@ -13,7 +13,9 @@ class Inquiries extends Model
     protected $fillable = [
         'fullname',
         'unit_concern',
-        'address',
+        'house_number',
+        'purok',
+        'barangay',
         'contact_number',
         'birthdate',
         'religion',
@@ -22,7 +24,8 @@ class Inquiries extends Model
         'occupation',
         'sex',
         'income',
-        'remarks'
+        'remarks',
+        'status'
     ];
 
     public function familyMembers()

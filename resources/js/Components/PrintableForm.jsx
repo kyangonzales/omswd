@@ -30,13 +30,13 @@ export default function PrintableForm({viewData}) {
   return (
 	<div className="w-full h-full p-10 border shadow-lg bg-white mx-auto mt-3 printable-item">
 	<div className="flex items-center justify-center mb-4">
-		<img src="/storage/mswd.jpg" alt="Logo" className="w-20 h-20 mr-2 mb-10" />
+		<img src="/storage/mswd.png" alt="Logo" className="w-20 h-20 mr-2 mb-10" />
 		<div className="text-center">
 			<h2 className="text-xl font-bold">MUNICIPAL SOCIAL WELFARE & DEVELOPMENT OFFICE</h2>
 			<h2 className="text-xl font-bold">GENERAL TINIO, NUEVA ECIJA</h2>
 			<h2 className="text-xl font-bold">INTAKE SHEET</h2>
 		</div>
-		<img src="/storage/gt-logo.jpg" alt="Logo" className="w-20 h-20 ml-2 mb-10" />
+		<img src="/storage/tinio.png" alt="Logo" className="w-20 h-20 ml-2 mb-10" />
 	</div>
 
 	<div className="flex justify-between mb-4">
@@ -67,7 +67,7 @@ export default function PrintableForm({viewData}) {
 				</tr>
 				<tr className="border-b">
 					<td className="font-bold">Address:</td>
-					<td className="border-b">{formatWord(viewData?.address)}</td>
+					<td className="border-b">{viewData?.house_number} {viewData?.purok} {viewData?.barangay}</td>
 				</tr>
 				<tr className="border-b">
 					<td className="font-bold">Contact Number:</td>
@@ -103,7 +103,7 @@ export default function PrintableForm({viewData}) {
 
 	<div>
 		<div className="text-sm font-bold mt-2 bg-zinc-200 p-2">II. FAMILY COMPOSITION</div>
-		<Table className="w-full rounded-lg mt-3">
+		<Table className="w-full rounded-lg mt-3 text-xs">
 			<TableCaption className="text-sm text-gray-500">
 				Family Composition: (Include all members of the family, who live in one household).
 			</TableCaption>

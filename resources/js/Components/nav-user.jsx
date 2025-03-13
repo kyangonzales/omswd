@@ -39,7 +39,7 @@ export function NavUser({ user }) {
                         >
                             <Avatar className="h-8 w-8 rounded-lg">
                                 <AvatarImage
-                                    src={user.avatar}
+                                    src={user?.profile}
                                     alt={user.name}
                                 />
                                 <AvatarFallback className="rounded-lg">
@@ -67,7 +67,7 @@ export function NavUser({ user }) {
                             <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                                 <Avatar className="h-8 w-8 rounded-lg">
                                     <AvatarImage
-                                        src={user.avatar}
+                                        src={user?.profile}
                                         alt={user.name}
                                     />
                                     <AvatarFallback className="rounded-lg">
@@ -87,19 +87,10 @@ export function NavUser({ user }) {
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
                             <DropdownMenuItem>
-                                <Sparkles />
-                                Upgrade to Pro
-                            </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuGroup>
-                            <DropdownMenuItem>
-                                <BadgeCheck />
+                                <Link className="flex items-center gap-x-2" href={route('profile.edit')}>
+                                <BadgeCheck className="h-4 w-4"/>
                                 Account
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <CreditCard />
-                                Billing
+                                </Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem>
                                 <Bell />

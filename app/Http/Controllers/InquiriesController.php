@@ -13,13 +13,102 @@ class InquiriesController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    // public function index()
+    // {
+    //     $data = Inquiries::all()->load('familyMembers');
+    //     return response()->json([
+    //         'payload' => $data
+    //     ], 200);
+    // }'
+
+
+    public function index(Request $request)
     {
-        $data = Inquiries::all()->load('familyMembers');
+        $query = Inquiries::with('familyMembers')->orderBy('created_at', 'desc');
+    
+        // Apply search filter if provided
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where('fullname', 'like', "%$search%");
+        }
+    
+        // Apply date range filter
+        if ($request->has('from')) {
+            $query->whereDate('created_at', '>=', $request->input('from'));
+        }
+        if ($request->has('to')) {
+            $query->whereDate('created_at', '<=', $request->input('to'));
+        }
+    
+        // Apply unit concern filter
+        if ($request->has('unit_concern')) {
+            $query->where('unit_concern', $request->input('unit_concern'));
+        }
+    
+        // Get rows per page from request (default to 10 if not provided)
+        $perPage = $request->input('per_page', 10);
+    
+        // Paginate the results dynamically
+        $data = $query->paginate($perPage);
+    
         return response()->json([
             'payload' => $data
         ], 200);
     }
+    
+
+    
+    // public function index(Request $request)
+    // {
+    //     $query = Inquiries::with('familyMembers')->orderBy('created_at', 'desc');
+    
+    //     // Apply search filter if provided
+    //     if ($request->has('search')) {
+    //         $search = $request->input('search');
+    //         $query->where('fullname', 'like', "%$search%");
+    //     }
+    
+    //     // Apply date range filter
+    //     if ($request->has('from')) {
+    //         $query->whereDate('created_at', '>=', $request->input('from'));
+    //     }
+    //     if ($request->has('to')) {
+    //         $query->whereDate('created_at', '<=', $request->input('to'));
+    //     }
+    
+    //     // Apply unit concern filter
+    //     if ($request->has('unit_concern')) {
+    //         $query->where('unit_concern', $request->input('unit_concern'));
+    //     }
+    
+    //     // Paginate the results (10 per page)
+    //     $data = $query->paginate(10);
+    
+    //     return response()->json([
+    //         'payload' => $data
+    //     ], 200);
+    // }
+    
+
+//     public function index(Request $request)
+// {
+//     $query = Inquiries::with('familyMembers')->latest();
+
+//     // Apply search filter if 'search' is provided
+//     if ($request->has('search')) {
+//         $search = $request->input('search');
+//         $query->where('fullname', 'like', "%$search%");  // Adjust field names as needed
+//             //   ->orWhere('email', 'like', "%$search%");
+//     }
+
+//     // Paginate the results (20 per page)
+//     $data = $query->paginate(10);
+
+//     return response()->json([
+//         'payload' => $data
+//     ], 200);
+// }
+
     public function selectOsca()
     {
         $data = Inquiries::where('unit_concern', "Senior Citizen's Affairs (OSCA)")->get();
@@ -50,38 +139,41 @@ class InquiriesController extends Controller
      */
     public function store(Request $request)
     {
-
-        $unit_concern = $request->unitConcern;
+        $unit_concern = $request->unit_concern;
         // Create the inquiry entry
         $data = Inquiries::create([
-            'fullname' => $request->name,
-            'unit_concern' => $request->unitConcern,
-            'address' => $request->houseNumber . " " . $request->purok . " " . $request->barangay,
-            'contact_number' => $request->contactNumber,
-            'birthdate' => $request->bday,
+            'fullname' => $request->fullname,
+            'unit_concern' => $request->unit_concern,
+            'house_number' => $request->house_number,
+            'purok' => $request->purok,
+            'barangay' => $request->barangay,
+            'contact_number' => $request->contact_number,
+            'birthdate' => $request->birthdate,
             'sex' => $request->sex,
             'religion' => $request->religion,
-            'civil_status' => $request->civilStatus,
-            'educ_attain' => $request->education,
+            'civil_status' => $request->civil_status,
+            'educ_attain' => $request->educ_attain,
             'occupation' => $request->occupation,
             'income' => $request->income,
             'remarks' => $request->remarks,
+            'status' => "pending",
         ]);
 
         // Get the generated inquiry ID
         $inquiry_id = $data->id;
 
         // Check if familyMembers is provided and is an array
-        if ($request->has('familyMembers') && is_array($request->familyMembers)) {
-            foreach ($request->familyMembers as $member) {
+        if ($request->has('family_members') && $request->fullname != "" && $request->birthdate != ""
+        && $request->sex != "" && $request->civil_status != "" && $request->relation_to_client != "") {
+            foreach ($request->family_members as $member) {
                 FamilyMember::create([
                     'inquiry_id' => $inquiry_id, // Assuming there's a foreign key in FamilyMember
-                    'fullname' => $member['name'] ?? null,
+                    'fullname' => $member['fullname'] ?? null,
                     'birthdate' => $member['birthdate'] ?? null,
                     'sex' => $member['sex'] ?? null,
-                    'civil_status' => $member['civilStatus'] ?? null,
-                    'relation_to_client' => $member['relationship'] ?? null,
-                    'educ_attain' => $member['education'] ?? null,
+                    'civil_status' => $member['civil_status'] ?? null,
+                    'relation_to_client' => $member['relation_to_client'] ?? null,
+                    'educ_attain' => $member['educ_attain'] ?? null,
                     'occupation' => $member['occupation'] ?? null,
                     'income' => $member['income'] ?? null,
                 ]);
@@ -136,10 +228,67 @@ class InquiriesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Inquiries $inquiries)
+    public function update(Request $request, Inquiries $inquiry)
     {
-        //
+        $inquiry->update($request->only([
+            'uni_concern', 'fullname', 'birthdate', 'contact_number', 'house_number',
+            'purok', 'barangay', 'educ_attain', 'sex', 'civil_status',
+            'religion', 'occupation', 'income', 'remarks'
+        ]));
+        // Process new or updated family members
+        $newFamilyMembers = [];
+        if ($request->has('family_members') && count($request->family_members) > 0 ) {
+            foreach ($request->family_members as $member) {
+                if ($member['id'] !== null || $member['id'] !== "") {
+                  
+                    FamilyMember::where('id', $member['id'])->update([
+                        'fullname' => $member['fullname'],
+                        'relation_to_client' => $member['relation_to_client'],
+                        'birthdate' => $member['birthdate'],
+                        'sex' => $member['sex'],
+                        'civil_status' => $member['civil_status'],
+                        'educ_attain' => $member['educ_attain'],
+                        'occupation' => $member['occupation'],
+                        'income' => $member['income'],
+                    ]);
+                } else {
+                    // Add new family member
+                    // $newFamilyMembers[] = $inquiry->familyMembers()->create($member);
+           
+                    $newFamilyMembers[] = $inquiry->familyMembers()->create([
+                        'fullname' => $member['fullname'],
+                        'relation_to_client' => $member['relation_to_client'],
+                        'birthdate' => $member['birthdate'],
+                        'sex' => $member['sex'],
+                        'civil_status' => $member['civil_status'],
+                        'educ_attain' => $member['educ_attain'],
+                        'occupation' => $member['occupation'],
+                        'income' => $member['income'],
+                    ]);
+                    
+                }
+            }
+        } else {
+            return;
+        }
+    
+        if ($request->has('deleted_family_members')) {
+            $deletedIds = collect($request->deleted_family_members)->pluck('id')->filter()->all();
+            
+            if (!empty($deletedIds)) {
+                FamilyMember::whereIn('id', $deletedIds)->delete();
+            }
+        }
+        
+    
+        return response()->json([
+            'message' => 'Inquiry updated successfully. Family members updated, added, and deleted as needed.',
+            'inquiry' => $inquiry->load('familyMembers'),
+            'new_family_members' => $newFamilyMembers, // Return newly added members
+        ]);
     }
+    
+    
 
     /**
      * Remove the specified resource from storage.
@@ -148,4 +297,19 @@ class InquiriesController extends Controller
     {
         //
     }
+
+
+    public function markAsComplete($id)
+    {
+        try {
+            $data = Inquiries::findOrFail($id);
+            $data->status = 'printed'; 
+            $data->update(); 
+    
+            return response()->json($data, 200);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => $th->getMessage()], 500); // Proper error handling
+        }
+    }
+    
 }

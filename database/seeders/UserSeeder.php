@@ -50,5 +50,11 @@ class UserSeeder extends Seeder
             'password' => Hash::make('password'),
             'role' => 'osca_admin'
         ]);
+        User::create([
+            'name' => 'PDAO ADMIN',
+            'email' => 'pdao@gmail.com',
+            'password' => Hash::make('password'),
+            'role' => 'pdao_admin'
+        ]);
     }
 }
