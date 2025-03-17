@@ -341,7 +341,7 @@ export default function Request() {
                         <TableBody>
                             {inquiryList.map((item, index) => (
                                 <TableRow
-                                    key={item.id}
+                                    key={item?.id}
                                     className="hover:bg-gray-50 text-gray-700"
                                 >
                                     <TableCell className="text-center">
@@ -351,35 +351,35 @@ export default function Request() {
                                     </TableCell>
                                     <TableCell>
                                         <p className="uppercase font-medium">
-                                            {formatWord(item.fullname)}
+                                            {formatWord(item?.fullname)}
                                         </p>
                                     </TableCell>
                                     <TableCell>
-                                        <p>{item.unit_concern}</p>
+                                        <p>{item?.unit_concern}</p>
                                         <p className="text-xs text-zinc-700">
                                             Created at:{" "}
-                                            {formatDateTime(item.created_at)}
+                                            {formatDateTime(item?.created_at)}
                                         </p>
                                     </TableCell>
                                     <TableCell>
                                         <Badge
                                             className={`${
-                                                item.status == "printed"
+                                                item?.status == "printed"
                                                     ? "bg-green-200 text-green-800 hover:text-green-900 hover:bg-green-400"
-                                                    : item.status ==
+                                                    : item?.status ==
                                                       "in progress"
                                                     ? "bg-blue-200 text-blue-800 hover:text-blue-900 hover:bg-blue-400"
-                                                    : item.status == "pending"
+                                                    : item?.status == "pending"
                                                     ? "bg-red-200 text-red-800 hover:text-red-900 hover:bg-red-400"
                                                     : ""
                                             }`}
                                         >
-                                            {item.status}
+                                            {item?.status}
                                         </Badge>
                                     </TableCell>
                                     <TableCell>
-                                        {item.house_number} {item.purok}{" "}
-                                        {item.barangay}
+                                        {item?.house_number} {item?.purok}{" "}
+                                        {item?.barangay}
                                     </TableCell>
                                     <TableCell className="text-center">
                                         <Button

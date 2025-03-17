@@ -7,6 +7,7 @@ use App\Models\Inquiries;
 use App\Events\RequestSent;
 use App\Models\FamilyMember;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class InquiriesController extends Controller
 {
@@ -162,23 +163,49 @@ class InquiriesController extends Controller
         // Get the generated inquiry ID
         $inquiry_id = $data->id;
 
-        // Check if familyMembers is provided and is an array
-        if ($request->has('family_members') && $request->fullname != "" && $request->birthdate != ""
-        && $request->sex != "" && $request->civil_status != "" && $request->relation_to_client != "") {
-            foreach ($request->family_members as $member) {
-                FamilyMember::create([
-                    'inquiry_id' => $inquiry_id, // Assuming there's a foreign key in FamilyMember
-                    'fullname' => $member['fullname'] ?? null,
-                    'birthdate' => $member['birthdate'] ?? null,
-                    'sex' => $member['sex'] ?? null,
-                    'civil_status' => $member['civil_status'] ?? null,
-                    'relation_to_client' => $member['relation_to_client'] ?? null,
-                    'educ_attain' => $member['educ_attain'] ?? null,
-                    'occupation' => $member['occupation'] ?? null,
-                    'income' => $member['income'] ?? null,
-                ]);
-            }
+
+
+        // // Check if familyMembers is provided and is an array
+        // if ($request->has('family_members') && $request->fullname != "" && $request->birthdate != ""
+        // && $request->sex != "" && $request->civil_status != "" && $request->relation_to_client != "") {
+        //     foreach ($request->family_members as $member) {
+        //         FamilyMember::create([
+        //             'inquiry_id' => $inquiry_id, // Assuming there's a foreign key in FamilyMember
+        //             'fullname' => $member['fullname'] ?? null,
+        //             'birthdate' => $member['birthdate'] ?? null,
+        //             'sex' => $member['sex'] ?? null,
+        //             'civil_status' => $member['civil_status'] ?? null,
+        //             'relation_to_client' => $member['relation_to_client'] ?? null,
+        //             'educ_attain' => $member['educ_attain'] ?? null,
+        //             'occupation' => $member['occupation'] ?? null,
+        //             'income' => $member['income'] ?? null,
+        //         ]);
+        //     }
+        // }
+
+        error_log($request);
+// Check if family_members is provided and is an array
+if ($request->has('family_members') && is_array($request->family_members)) {
+    foreach ($request->family_members as $member) {
+        // Ensure required fields are not empty
+        if (!empty($member['fullname']) && !empty($member['birthdate']) && 
+            !empty($member['sex']) && !empty($member['civil_status']) && 
+            !empty($member['relation_to_client'])) {
+            
+            FamilyMember::create([
+                'inquiry_id' => $inquiry_id, // Assuming there's a foreign key in FamilyMember
+                'fullname' => $member['fullname'],
+                'birthdate' => $member['birthdate'],
+                'sex' => $member['sex'],
+                'civil_status' => $member['civil_status'],
+                'relation_to_client' => $member['relation_to_client'],
+                'educ_attain' => $member['educ_attain'] ?? null,
+                'occupation' => $member['occupation'] ?? null,
+                'income' => $member['income'] ?? null,
+            ]);
         }
+    }
+}
 
 
         $data->load('familyMembers');
@@ -235,11 +262,13 @@ class InquiriesController extends Controller
             'purok', 'barangay', 'educ_attain', 'sex', 'civil_status',
             'religion', 'occupation', 'income', 'remarks'
         ]));
+
+        error_log($request);
         // Process new or updated family members
         $newFamilyMembers = [];
         if ($request->has('family_members') && count($request->family_members) > 0 ) {
             foreach ($request->family_members as $member) {
-                if ($member['id'] !== null || $member['id'] !== "") {
+                if ($member['id'] != null || $member['id'] != "") {
                   
                     FamilyMember::where('id', $member['id'])->update([
                         'fullname' => $member['fullname'],
@@ -269,16 +298,23 @@ class InquiriesController extends Controller
                 }
             }
         } else {
-            return;
+            
         }
     
-        if ($request->has('deleted_family_members')) {
+
+        $deletedIds = [];
+
+        if (!empty($request->deleted_family_members) && count($request->deleted_family_members) > 0) {
             $deletedIds = collect($request->deleted_family_members)->pluck('id')->filter()->all();
-            
-            if (!empty($deletedIds)) {
-                FamilyMember::whereIn('id', $deletedIds)->delete();
+        
+            Log::info('Deleting Family Members with IDs:', $deletedIds);
+        
+            // Loop through each ID and delete individually
+            foreach ($deletedIds as $id) {
+                FamilyMember::where('id', $id)->delete();
             }
         }
+        
         
     
         return response()->json([

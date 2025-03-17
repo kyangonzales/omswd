@@ -88,7 +88,6 @@ export default function Form({
             };
         });
     };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log(formData);
@@ -110,6 +109,8 @@ export default function Form({
                     `/updateInquire/${formData?.id}`,
                     formData
                 );
+                console.log(res);
+                
                 setViewData(res.data.inquiry);
                 setInquiryList((prevList) =>
                     prevList.map((item) =>

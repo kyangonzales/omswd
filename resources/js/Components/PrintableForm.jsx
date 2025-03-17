@@ -125,14 +125,14 @@ export default function PrintableForm({viewData}) {
 				{viewData?.family_members?.map((member, index) => (
 					<TableRow key={index} className="border-b">
 						<TableCell className="font-medium text-center">{index+1 + "."}</TableCell>
-						<TableCell className="font-medium">{member.fullname}</TableCell>
-						<TableCell className="text-center">{getAge(member.birthdate)}</TableCell>
-						<TableCell className="text-center">{member.sex}</TableCell>
-						<TableCell className="text-center">{member.civil_status}</TableCell>
-						<TableCell className="text-center">{member.relation_to_client}</TableCell>
-						<TableCell className="text-center">{member.educ_attain}</TableCell>
-						<TableCell className="text-center">{member.occupation}</TableCell>
-						<TableCell className="text-center">₱{member.income}</TableCell>
+						<TableCell className="font-medium">{member?.fullname}</TableCell>
+						<TableCell className="text-center">{getAge(member?.birthdate)}</TableCell>
+						<TableCell className="text-center">{member?.sex}</TableCell>
+						<TableCell className="text-center">{member?.civil_status}</TableCell>
+						<TableCell className="text-center">{member?.relation_to_client}</TableCell>
+						<TableCell className="text-center">{member?.educ_attain}</TableCell>
+						<TableCell className="text-center">{member?.occupation}</TableCell>
+						<TableCell className="text-center">₱{member?.income}</TableCell>
 					</TableRow>
 				))}
 				</TableBody>
