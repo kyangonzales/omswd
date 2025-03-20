@@ -14,6 +14,7 @@ import {
     PenLineIcon,
     Search,
     Trash2,
+    Trash2Icon,
     X,
 } from "lucide-react";
 import axios from "axios";
@@ -46,6 +47,8 @@ import {
     DialogTrigger,
 } from "@/Components/ui/dialog";
 import { DatePickerWithRange } from "@/Components/ui/datepicker-with-range";
+import { toast } from "sonner";
+import { Toaster } from "sonner";
 
 export default function Request() {
     const [inquiryList, setInquiryList] = useState([]);
@@ -214,6 +217,34 @@ export default function Request() {
         setViewData(data);
         setContent("view");
     };
+
+    const [deleteModal, setDeleteModal] = useState(false);
+    const [deleteIdRequest, setDeleteIdRequest] = useState();
+    const handleDeleteRequest = (data)=>{
+        console.log(data);
+        
+        setDeleteIdRequest(data?.id);
+        setDeleteModal(true)
+    }
+    const deleteRequest = async () => {
+        setLoading(true);
+        try {
+            await axios.delete(`/deleteRequest/${deleteIdRequest}`);
+            setInquiryList((prevList) => prevList.filter(item => item.id !== deleteIdRequest));
+            setDeleteIdRequest(null);
+              toast.info("Action Completed", {
+                            description: "The reqyest has been deleted successfully",
+                            duration: 100,
+                            position: "bottom-right",
+                        });
+        } catch (error) {
+            console.error("Error deleting inquiry:", error);
+        } finally {
+            setLoading(false);
+            setContent("main");
+        }
+    };
+    
 
     const [edit, setEdit] = useState(false);
     const editForm = (data) => {
@@ -504,6 +535,11 @@ export default function Request() {
                         </div>
                     </div>
                 </div>
+                <Toaster
+                    toastOptions={{
+                        className: "w-full  mb-3 font-sans shadow-lg bg-green-200 text-base ",
+                    }}
+                />
             </AuthenticatedLayout>
         );
     }
@@ -552,6 +588,12 @@ export default function Request() {
                             className="ml-2 bg-blue-800"
                         >
                             <PenLineIcon />
+                        </Button>
+                        <Button
+                            onClick={() => handleDeleteRequest(viewData)}
+                            className="bg-red-700 hover:bg-red-600"
+                        >
+                            <Trash2Icon />
                         </Button>
                         <Button
                             onClick={() => closeForm()}
@@ -612,6 +654,43 @@ export default function Request() {
                         </div>
                     </DialogContent>
                 </Dialog>
+                <Dialog open={deleteModal} onOpenChange={setDeleteModal}>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Are you absolutely sure?</DialogTitle>
+                            <DialogDescription>
+                                This action cannot be undone. By clicking the
+                                "Yes" button, the request will be deleted permanently.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="flex w-full justify-end gap-x-2">
+                            <Button
+                                onClick={() => deleteRequest()}
+                                disabled={loading}
+                                className={`${
+                                    loading
+                                        ? "bg-zinc-300 text-zinc-500"
+                                        : "bg-green-700 hover:bg-green-600"
+                                } `}
+                            >
+                                Yes, delete it
+                            </Button>
+                            <Button
+                                className={`${
+                                    loading
+                                        ? "bg-zinc-300 text-zinc-500"
+                                        : "border-red-500 text-red-600 hover:bg-red-600 hover:text-white"
+                                } `}
+                                variant="outline"
+                                disabled={loading}
+                                onClick={() => setDeleteModal(false)}
+                            >
+                                Cancel
+                            </Button>
+                        </div>
+                    </DialogContent>
+                </Dialog>
+               
             </div>
         );
     }

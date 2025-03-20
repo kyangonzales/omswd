@@ -39,7 +39,8 @@ export function NavUser({ user }) {
                         >
                             <Avatar className="h-8 w-8 rounded-lg">
                                 <AvatarImage
-                                    src={user?.profile}
+                                    // src={user?.profile}
+                                    src={`${import.meta.env.VITE_BASE_URL}/${user?.profile}`} 
                                     alt={user.name}
                                 />
                                 <AvatarFallback className="rounded-lg">

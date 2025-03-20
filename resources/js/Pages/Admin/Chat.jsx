@@ -5,9 +5,21 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar";
 import { getMessengerTimestamp, getTimeGap, hasTimeGap } from "@/lib/utils";
 import { MessageCircle } from "lucide-react";
 
-function UserList({ users, user, selectedUser, setSelectedUser, unread_senders }) {
-    console.log("UserList", unread_senders);
-
+function UserList({ users, user, selectedUser, setSelectedUser, unread_senders,messages,setMessages }) {
+    console.log("UserList", messages);
+    const handleReadUser = async (data)=>{
+        const readMessage = await axios.get(`/readMessage/${data?.id}`);
+        // setMessages((prevMessages) =>
+        //     prevMessages.map((message) => {
+        //         if (message.sender_id === data?.id) {
+        //             return { ...message, is_read: 0 }; // Update `is_read` lang
+        //         }
+        //         return message; // Ibalik ang ibang messages nang hindi binabago
+        //     })
+        // );
+        
+        setSelectedUser(data);
+    }
     return (
         <div className="flex flex-col w-1/4 border-l shadow-sm">
             <div className="text-lg px-5 font-semibold text-zinc-500 overflow-y-auto h-16 border-b shadow-sm flex items-center">
@@ -27,7 +39,7 @@ function UserList({ users, user, selectedUser, setSelectedUser, unread_senders }
                             className={`px-4 py-2 text-sm gap-x-2 items-center text-left flex w-full hover:bg-gray-100 ${
                                 selectedUser?.id === item.id ? "bg-gray-100" : ""
                             }`}
-                            onClick={() => setSelectedUser(item)}
+                            onClick={() => handleReadUser(item)}
                         >
                             <Avatar>
                                 <AvatarImage
@@ -275,6 +287,8 @@ export default function Chat({ user, unread_senders }) {
                     />
                 </div>
                 <UserList
+                messages={messages}
+                setMessages={setMessages}
                 unread_senders={unread_senders}
                     users={users}
                     user={user}

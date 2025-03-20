@@ -19,7 +19,8 @@ class FamilyMember extends Model
         'relation_to_client',
         'educ_attain',
         'occupation',
-        'income'
+        'income',
+        'is_patient'
     ];
 
     public function inquiry()

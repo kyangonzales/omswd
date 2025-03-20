@@ -3,15 +3,16 @@ import { Head } from "@inertiajs/react";
 import { BookmarkCheck, ChartArea, Loader2, MessageCircle, Settings, User } from "lucide-react";
 import { useState } from "react";
 
-const quicklinks = [
-    { label: "Users", url: "#", description: "Current list of users...", icon: User , count: 121},
-    { label: "Messages", url: "#", description: "total of unread messages...", icon: MessageCircle,count: 121}, 
-    { label: "Pending Request", url: "#", description: "Current list of pending requests...", icon: Loader2, count: 121},
-    { label: "Completed Request", url: "#", description: "Count of request completed...", icon: BookmarkCheck, count: 121},
-    { label: "Analytics", url: "#", description: "sample", icon: ChartArea, count: 121},
-    { label: "Settings", url: "#", description: "sample", icon: Settings, count: 121},
-];
-export default function Dashboard({ auth }) {
+
+export default function Dashboard({ auth,total_users,unread_messages, pending_inquiry,completed_inquiry }) {
+    const quicklinks = [
+        { label: "Users", url: "#", description: "Current list of users...", icon: User , count: total_users, link: '/messages'},
+        { label: "Messages", url: "#", description: "total of unread messages...", icon: MessageCircle,count: unread_messages,link: '/manage-user'},
+        { label: "Pending Request", url: "#", description: "Current list of pending requests...", icon: Loader2, count: pending_inquiry,link: '/request'},
+        { label: "Completed Request", url: "#", description: "Count of request completed...", icon: BookmarkCheck, count: completed_inquiry,link: '/messages'},
+        { label: "Analytics", url: "#", description: "sample", icon: ChartArea, count: 121,link: '/analytics'},
+        { label: "Settings", url: "#", description: "sample", icon: Settings, count: 121,link: '/settings'},
+    ];
     return (
         <AuthenticatedLayout
             header={
@@ -28,13 +29,15 @@ export default function Dashboard({ auth }) {
                 {quicklinks.map((items, index) => (
                     <div
                         key={index}
-                        className="w-full border p-4 shadow-sm h-32 hover:shadow-lg hover:shadow-blue-50 transition-all"
+                        className="w-full border hover:scale-95 p-4 shadow-sm h-32 hover:shadow-lg transition-all"
                     >
                         <div className="w-full flex justify-between">
                         <h1 className="text-lg font-medium">{items.label}</h1>
+                   
                         <items.icon/>
                         </div>
-                        <b className="text-4xl text-sky-800 font-bold">{items.count}</b>
+                        {items.label == "Analytics" || items.label == "Settings" ? <></> :   <b className="text-4xl text-sky-800 font-bold">{items.count}</b>}
+                      
                         <p className="text-xs">{items.description}</p>
                     </div>
                 ))}

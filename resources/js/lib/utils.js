@@ -148,3 +148,9 @@ export function getMessengerTimestamp(timestamp) {
   }
 }
 
+
+export const formatLetter = (name) => {
+  if (!name) return "N/A";
+  return name.toLowerCase().replace(/\b\w/g, char => char.toUpperCase());
+};
+

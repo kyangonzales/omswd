@@ -11,18 +11,6 @@ use Illuminate\Support\Facades\Log;
 
 class InquiriesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    // public function index()
-    // {
-    //     $data = Inquiries::all()->load('familyMembers');
-    //     return response()->json([
-    //         'payload' => $data
-    //     ], 200);
-    // }'
-
-
     public function index(Request $request)
     {
         $query = Inquiries::with('familyMembers')->orderBy('created_at', 'desc');
@@ -56,59 +44,6 @@ class InquiriesController extends Controller
             'payload' => $data
         ], 200);
     }
-    
-
-    
-    // public function index(Request $request)
-    // {
-    //     $query = Inquiries::with('familyMembers')->orderBy('created_at', 'desc');
-    
-    //     // Apply search filter if provided
-    //     if ($request->has('search')) {
-    //         $search = $request->input('search');
-    //         $query->where('fullname', 'like', "%$search%");
-    //     }
-    
-    //     // Apply date range filter
-    //     if ($request->has('from')) {
-    //         $query->whereDate('created_at', '>=', $request->input('from'));
-    //     }
-    //     if ($request->has('to')) {
-    //         $query->whereDate('created_at', '<=', $request->input('to'));
-    //     }
-    
-    //     // Apply unit concern filter
-    //     if ($request->has('unit_concern')) {
-    //         $query->where('unit_concern', $request->input('unit_concern'));
-    //     }
-    
-    //     // Paginate the results (10 per page)
-    //     $data = $query->paginate(10);
-    
-    //     return response()->json([
-    //         'payload' => $data
-    //     ], 200);
-    // }
-    
-
-//     public function index(Request $request)
-// {
-//     $query = Inquiries::with('familyMembers')->latest();
-
-//     // Apply search filter if 'search' is provided
-//     if ($request->has('search')) {
-//         $search = $request->input('search');
-//         $query->where('fullname', 'like', "%$search%");  // Adjust field names as needed
-//             //   ->orWhere('email', 'like', "%$search%");
-//     }
-
-//     // Paginate the results (20 per page)
-//     $data = $query->paginate(10);
-
-//     return response()->json([
-//         'payload' => $data
-//     ], 200);
-// }
 
     public function selectOsca()
     {
@@ -141,7 +76,6 @@ class InquiriesController extends Controller
     public function store(Request $request)
     {
         $unit_concern = $request->unit_concern;
-        // Create the inquiry entry
         $data = Inquiries::create([
             'fullname' => $request->fullname,
             'unit_concern' => $request->unit_concern,
@@ -158,55 +92,33 @@ class InquiriesController extends Controller
             'income' => $request->income,
             'remarks' => $request->remarks,
             'status' => "pending",
+            'problem_presented' => $request->problem_presented,
+            'is_patient' => $request->is_patient,
+
         ]);
 
-        // Get the generated inquiry ID
         $inquiry_id = $data->id;
 
-
-
-        // // Check if familyMembers is provided and is an array
-        // if ($request->has('family_members') && $request->fullname != "" && $request->birthdate != ""
-        // && $request->sex != "" && $request->civil_status != "" && $request->relation_to_client != "") {
-        //     foreach ($request->family_members as $member) {
-        //         FamilyMember::create([
-        //             'inquiry_id' => $inquiry_id, // Assuming there's a foreign key in FamilyMember
-        //             'fullname' => $member['fullname'] ?? null,
-        //             'birthdate' => $member['birthdate'] ?? null,
-        //             'sex' => $member['sex'] ?? null,
-        //             'civil_status' => $member['civil_status'] ?? null,
-        //             'relation_to_client' => $member['relation_to_client'] ?? null,
-        //             'educ_attain' => $member['educ_attain'] ?? null,
-        //             'occupation' => $member['occupation'] ?? null,
-        //             'income' => $member['income'] ?? null,
-        //         ]);
-        //     }
-        // }
-
-        error_log($request);
-// Check if family_members is provided and is an array
-if ($request->has('family_members') && is_array($request->family_members)) {
-    foreach ($request->family_members as $member) {
-        // Ensure required fields are not empty
-        if (!empty($member['fullname']) && !empty($member['birthdate']) && 
-            !empty($member['sex']) && !empty($member['civil_status']) && 
-            !empty($member['relation_to_client'])) {
-            
-            FamilyMember::create([
-                'inquiry_id' => $inquiry_id, // Assuming there's a foreign key in FamilyMember
-                'fullname' => $member['fullname'],
-                'birthdate' => $member['birthdate'],
-                'sex' => $member['sex'],
-                'civil_status' => $member['civil_status'],
-                'relation_to_client' => $member['relation_to_client'],
-                'educ_attain' => $member['educ_attain'] ?? null,
-                'occupation' => $member['occupation'] ?? null,
-                'income' => $member['income'] ?? null,
-            ]);
+        if ($request->has('family_members') && is_array($request->family_members)) {
+            foreach ($request->family_members as $member) {
+                if (!empty($member['fullname']) && !empty($member['birthdate']) && 
+                    !empty($member['sex']) && !empty($member['civil_status']) && 
+                    !empty($member['relation_to_client'])) {
+                    FamilyMember::create([
+                        'inquiry_id' => $inquiry_id, 
+                        'fullname' => $member['fullname'],
+                        'birthdate' => $member['birthdate'],
+                        'sex' => $member['sex'],
+                        'civil_status' => $member['civil_status'],
+                        'relation_to_client' => $member['relation_to_client'],
+                        'educ_attain' => $member['educ_attain'] ?? null,
+                        'occupation' => $member['occupation'] ?? null,
+                        'income' => $member['income'] ?? null,
+                        'is_patient' =>  $member['is_patient'] ?? null,
+                    ]);
+                }
+            }
         }
-    }
-}
-
 
         $data->load('familyMembers');
         $userIds = [];
@@ -222,7 +134,6 @@ if ($request->has('family_members') && is_array($request->family_members)) {
             "Referral (Indigency, Ambulance, Philhealth, LCR, PAO)" => "lydo_admin",
         ];
 
-        // Get the role for the given unit_concern
         $role = $roleMapping[$unit_concern] ?? null;
 
         if ($role) {
@@ -260,11 +171,9 @@ if ($request->has('family_members') && is_array($request->family_members)) {
         $inquiry->update($request->only([
             'uni_concern', 'fullname', 'birthdate', 'contact_number', 'house_number',
             'purok', 'barangay', 'educ_attain', 'sex', 'civil_status',
-            'religion', 'occupation', 'income', 'remarks'
+            'religion', 'occupation', 'income', 'remarks', 'is_patient'
         ]));
 
-        error_log($request);
-        // Process new or updated family members
         $newFamilyMembers = [];
         if ($request->has('family_members') && count($request->family_members) > 0 ) {
             foreach ($request->family_members as $member) {
@@ -279,11 +188,9 @@ if ($request->has('family_members') && is_array($request->family_members)) {
                         'educ_attain' => $member['educ_attain'],
                         'occupation' => $member['occupation'],
                         'income' => $member['income'],
+                        'is_patient' =>  $member['is_patient']
                     ]);
                 } else {
-                    // Add new family member
-                    // $newFamilyMembers[] = $inquiry->familyMembers()->create($member);
-           
                     $newFamilyMembers[] = $inquiry->familyMembers()->create([
                         'fullname' => $member['fullname'],
                         'relation_to_client' => $member['relation_to_client'],
@@ -293,30 +200,21 @@ if ($request->has('family_members') && is_array($request->family_members)) {
                         'educ_attain' => $member['educ_attain'],
                         'occupation' => $member['occupation'],
                         'income' => $member['income'],
+                        'is_patient' =>  $member['is_patient']
                     ]);
                     
                 }
             }
-        } else {
-            
-        }
+        } else {}
     
-
         $deletedIds = [];
 
         if (!empty($request->deleted_family_members) && count($request->deleted_family_members) > 0) {
             $deletedIds = collect($request->deleted_family_members)->pluck('id')->filter()->all();
-        
-            Log::info('Deleting Family Members with IDs:', $deletedIds);
-        
-            // Loop through each ID and delete individually
             foreach ($deletedIds as $id) {
                 FamilyMember::where('id', $id)->delete();
             }
         }
-        
-        
-    
         return response()->json([
             'message' => 'Inquiry updated successfully. Family members updated, added, and deleted as needed.',
             'inquiry' => $inquiry->load('familyMembers'),
@@ -329,11 +227,17 @@ if ($request->has('family_members') && is_array($request->family_members)) {
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Inquiries $inquiries)
+    public function destroy($id)
     {
-        //
-    }
+        try {
+            $inquiry = Inquiries::findOrFail($id);
+            $inquiry->delete();
 
+            return response()->json(['message' => 'Inquiry deleted successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to delete inquiry'], 500);
+        }
+    }
 
     public function markAsComplete($id)
     {
@@ -344,7 +248,7 @@ if ($request->has('family_members') && is_array($request->family_members)) {
     
             return response()->json($data, 200);
         } catch (\Throwable $th) {
-            return response()->json(['error' => $th->getMessage()], 500); // Proper error handling
+            return response()->json(['error' => $th->getMessage()], 500); 
         }
     }
     

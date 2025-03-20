@@ -26,6 +26,8 @@ export default function AuthenticatedLayout({ header, children }) {
         if (!window.Echo || !user?.id) return;
         const channel = window.Echo.channel(`request.${user.id}`);
         const listener = (event) => {
+            const audio = new Audio(`${window.location.origin}/storage/sounds/pingding.mp3`);
+            audio.play();
             toast.info("New Request", {
                 description: event.data.unit_concern,
                 duration: 15000,
@@ -42,8 +44,7 @@ export default function AuthenticatedLayout({ header, children }) {
                 },
             });
         };
-        const audio = new Audio(`${window.location.origin}/storage/sounds/pingding.mp3`);
-        audio.play();
+       
         channel.listen(".request.sent", listener);
         return () => {
             channel.stopListening(".request.sent");
@@ -108,7 +109,7 @@ export default function AuthenticatedLayout({ header, children }) {
             { label: "User Management", url: "manage-user", icon: User },
             { label: "Messages", url: "messages", icon: MessageCircle },
             { label: "Request", url: "request", icon: GitPullRequest },
-            { label: "Analytics", url: "#", icon: ChartNoAxesCombined },
+            { label: "Analytics", url: "analytics", icon: ChartNoAxesCombined },
             { label: "Settings", url: "settings", icon: Settings },
         ],
         lydo_admin: [
@@ -178,7 +179,7 @@ export default function AuthenticatedLayout({ header, children }) {
                 <AppSidebar routes={routes} user={user} total={total_unread} />
                 <Toaster
                     toastOptions={{
-                        className: "w-full  mb-3 font-sans text-base shadow-sm",
+                        className: "w-full  mb-3 font-sans shadow-lg bg-green-200 text-base ",
                     }}
                 />
                 <main className="w-full pb-10">{children}</main>

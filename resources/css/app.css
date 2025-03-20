@@ -111,9 +111,87 @@
   }
 }
 
-
 @media print {
+  
   .print-button {
-      display: none;
+    display: none;
+  }
+  
+
+  /* Reduce overall margins and paddings */
+  body, .printable-item {
+    font-size: 13px; /* Adjust as needed */
+    margin: 0;
+    padding: 0;
+  }
+
+
+  .header-container {
+    padding: 0 !important;
+    @apply gap-x-4 items-center;
+    line-height: 2;
+}
+
+.print-header {
+    font-size: 14px; 
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1;
+}
+
+.custom-table{
+  font-size: 8px; 
+}
+
+.header-logo {
+    width: 55px !important; 
+    height: 55px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+  table {
+    font-size: 13px; 
+    margin: 2px 0; 
+  }
+
+  td, th {
+    font-size: 13px; 
+    padding: 1px; 
+  }
+
+  .p-4 {
+    padding: 2px !important; 
+  }
+
+  .mb-4, .mt-4 {
+    margin-top: 2px !important;
+    margin-bottom: 2px !important;
+  }
+
+  .t-caption{
+    font-size: 13px;
+    padding: 0;
+    margin: 0;
+  }
+
+  .header-bg{
+    font-size: 14px;
+    padding: 2px;
+    margin: 2px;
+    background-color: rgb(238, 238, 238) !important; 
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .remarks {
+    font-size: 13px; 
+    margin-top: 2px !important;
+    padding: 2px !important;
+  }
+
+ 
+  .print-button {
+    margin-top: 0;
   }
 }

@@ -134,5 +134,13 @@ class ChatController extends Controller
             'senders' => $senders // Listahan ng senders na may unread messages
         ]);
     }
+
+
+    public function readMessage($id) {
+        Messenger::where('sender_id', $id)
+            ->where('is_read', false)
+            ->update(['is_read' => true]);
+    }
+    
     
 }

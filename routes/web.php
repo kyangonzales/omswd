@@ -3,6 +3,9 @@
 use App\Models\User;
 use Inertia\Inertia;
 
+use App\Models\Inquiries;
+use App\Models\Messenger;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\AicsController;
@@ -37,6 +40,11 @@ Route::get('/', function () {
 
 Route::middleware('auth', )->group(function () {
 
+    Route::delete('/deleteRequest/{id}', [InquiriesController::class, 'destroy']);
+
+    
+    Route::get('/readMessage/{id}', [ChatController::class, 'readMessage'])->name('readMessage');
+
     Route::post('/updateInquire/{inquiry}', [InquiriesController::class, 'update']);
     Route::get('/inquireList', [InquiriesController::class, 'index'])->name('inquireList');
 
@@ -64,9 +72,22 @@ Route::middleware('auth', )->group(function () {
 
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('Admin/Dashboard');
-    })->name('dashboard');
+   Route::get('dashboard', function () {
+    $user_id = auth()->id();
+    $total_users = User::count();
+    $unread_messages = Messenger::where('receiver_id', $user_id)
+                                ->where('is_read', false)
+                                ->count();
+    $pending_inquiry = Inquiries::where('status', 'pending')->count();
+    $completed_inquiry = Inquiries::where('status', 'printed')->count();
+
+    return Inertia::render('Admin/Dashboard', [
+        'total_users' => $total_users,
+        'unread_messages' => $unread_messages,
+        'pending_inquiry' => $pending_inquiry,
+        'completed_inquiry' => $completed_inquiry
+    ]);
+})->name('dashboard');
 
     Route::get('manage-user', function () {
         return Inertia::render('Admin/ManageUser');
@@ -79,6 +100,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('messages', function () {
         return Inertia::render('Admin/Messages');
     })->name('messages');
+
+    Route::get('analytics', function () {
+        return Inertia::render('Admin/Analytics');
+    })->name('analytics');
 
     Route::get('settings', function () {
         return Inertia::render('Admin/Settings');

@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('educ_attain')->nullable();
             $table->string('occupation')->nullable();
             $table->string('income')->nullable();
+            $table->boolean('is_patient')->nullable();
             $table->timestamps();
         });
     }

@@ -144,6 +144,8 @@ export default function Request() {
     const initialFormData = {
         id: null,
         unit_concern: "",
+        problem_presented: "",
+        is_patient: false,
         fullname: "",
         birthdate: "",
         contact_number: "",
@@ -162,6 +164,7 @@ export default function Request() {
             {
                 id: null,
                 fullname: "",
+                is_patient: false,
                 relation_to_client: "",
                 birthdate: "",
                 sex: "",
@@ -174,6 +177,7 @@ export default function Request() {
     };
 
     const [formData, setFormData] = useState(initialFormData);
+    
 
     // Reset function
     const resetForm = () => {
@@ -202,6 +206,8 @@ export default function Request() {
         setFormData({
             id: data.id,
             unit_concern: data.unit_concern || "",
+            problem_presented: data.problem_presented || "",
+            is_patient: data.is_patient || "",
             fullname: data.fullname || "",
             birthdate: data.birthdate || "",
             contact_number: data.contact_number || "",
@@ -220,6 +226,7 @@ export default function Request() {
                 ? data.family_members.map((member) => ({
                       id: member.id || "",
                       fullname: member.fullname || "",
+                      is_patient: member.is_patient || "",
                       relation_to_client: member.relation_to_client || "",
                       birthdate: member.birthdate || "",
                       sex: member.sex || "",
@@ -232,6 +239,7 @@ export default function Request() {
                       {
                           id: null,
                           fullname: "",
+                          is_patient: false,
                           relation_to_client: "",
                           birthdate: "",
                           sex: "",

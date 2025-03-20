@@ -12,6 +12,8 @@ import {
 import { PlusCircle, Trash2 } from "lucide-react";
 import { currentDate } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import InputLabel from "@/Components/InputLabel";
+import Checkbox from "@/Components/Checkbox";
 export default function Form({
     formData,
     setFormData,
@@ -24,17 +26,22 @@ export default function Form({
 }) {
     const { toast } = useToast();
     const [loading, setLoading] = useState(false);
+    const [text, setText] = useState(""); // State to store missing fields
     const handleSelectChange = (name, value) => {
         setFormData((prevData) => ({
             ...prevData,
             [name]: value,
         }));
     };
+
+    const handleCheckBoxChange = (value) => {
+        setFormData({ ...formData, is_patient: value });
+    };
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({
             ...prevData,
-            [name]: value,
+            [name]: value.toUpperCase(),
         }));
     };
 
@@ -44,7 +51,18 @@ export default function Form({
             const updatedFamilyMembers = [...prevData.family_members];
             updatedFamilyMembers[index] = {
                 ...updatedFamilyMembers[index],
-                [name]: value,
+                [name]: value.toUpperCase(),
+            };
+            return { ...prevData, family_members: updatedFamilyMembers };
+        });
+    };
+
+    const handleFamilyMemberChange = (index, value) => {
+        setFormData((prevData) => {
+            const updatedFamilyMembers = [...prevData.family_members];
+            updatedFamilyMembers[index] = {
+                ...updatedFamilyMembers[index],
+                is_patient: value,
             };
             return { ...prevData, family_members: updatedFamilyMembers };
         });
@@ -58,6 +76,7 @@ export default function Form({
                 {
                     id: null,
                     fullname: "",
+                    is_patient: null,
                     relation_to_client: "",
                     birthdate: "",
                     sex: "",
@@ -88,14 +107,85 @@ export default function Form({
             };
         });
     };
+
+    const validateForm = (data) => {
+        let missingFields = [];
+
+        // Required fields for the main form
+        const requiredFields = [
+            { key: "fullname", label: "Full Name" },
+            { key: "birthdate", label: "Birthdate" },
+            { key: "contact_number", label: "Contact Number" },
+            { key: "sex", label: "Sex" },
+            { key: "purok", label: "Purok" },
+            { key: "barangay", label: "Barangay" },
+            { key: "civil_status", label: "Civil Status" },
+        ];
+
+        // Check missing fields in the main form
+        requiredFields.forEach(({ key, label }) => {
+            if (!data[key]) {
+                missingFields.push(label);
+            }
+        });
+
+        // Validate family members
+        data.family_members.forEach((member, index) => {
+            const familyRequiredFields = [
+                {
+                    key: "fullname",
+                    label: `Family Member ${index + 1}: Full Name`,
+                },
+                {
+                    key: "birthdate",
+                    label: `Family Member ${index + 1}: Birthdate`,
+                },
+                { key: "sex", label: `Family Member ${index + 1}: Sex` },
+                {
+                    key: "civil_status",
+                    label: `Family Member ${index + 1}: Civil Status`,
+                },
+                {
+                    key: "relation_to_client",
+                    label: `Family Member ${index + 1}: Relationship`,
+                },
+            ];
+
+            // Check if at least one field is filled in the family member
+            const hasData = familyRequiredFields.some(({ key }) => member[key]);
+
+            if (hasData) {
+                // If at least one field is filled, check for missing required fields
+                familyRequiredFields.forEach(({ key, label }) => {
+                    if (!member[key]) {
+                        missingFields.push(label);
+                    }
+                });
+            }
+        });
+
+        return missingFields;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log(formData);
+
+        const missingFields = validateForm(formData);
+        if (missingFields.length > 0) {
+            setText(
+                `Please fill in the following fields: \n${missingFields.join(
+                    ", \n"
+                )}`
+            ); // Update state with missing fields
+            return;
+        }
+
         try {
             setLoading(true);
             if (formData.id == null) {
                 const res = await axios.post("/inquire", formData);
-                setInquiryList((prevList) => [...prevList,res.data.payload]);
+                setInquiryList((prevList) => [...prevList, res.data.payload]);
                 toast({
                     variant: "success",
                     title: "Request Sent",
@@ -104,13 +194,10 @@ export default function Form({
                 resetForm();
                 setContent("main");
             } else {
-                console.log("Editing Exisiting");
                 const res = await axios.post(
                     `/updateInquire/${formData?.id}`,
                     formData
                 );
-                console.log(res);
-                
                 setViewData(res.data.inquiry);
                 setInquiryList((prevList) =>
                     prevList.map((item) =>
@@ -127,6 +214,7 @@ export default function Form({
         } catch (error) {
             console.log(error);
         } finally {
+            setText("");
             setLoading(false);
         }
     };
@@ -218,6 +306,50 @@ export default function Form({
                                 </SelectItem>
                             </SelectContent>
                         </Select>
+                        <div className="w-full">
+                            {formData.unit_concern ==
+                            "Aid to Individual in Crisis (AICS)" ? (
+                                <div className="">
+                                    <InputLabel>
+                                        Assistance{" "}
+                                        <small className="text-red-600 font-extrabold text-lg">
+                                            *
+                                        </small>
+                                        <Select
+                                            name="problem_presented"
+                                            value={formData.problem_presented}
+                                            className="text-xs"
+                                            onValueChange={(value) =>
+                                                handleSelectChange(
+                                                    "problem_presented",
+                                                    value
+                                                )
+                                            }
+                                        >
+                                            <SelectTrigger className="w-full">
+                                                <SelectValue placeholder="Select Assistance" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="Burial Assistance">
+                                                    Burial Assistance
+                                                </SelectItem>
+                                                <SelectItem value="Medical Assiatnce">
+                                                    Medical Assiatnce
+                                                </SelectItem>
+                                                <SelectItem value="Balik Probinsya">
+                                                    Balik Probinsya
+                                                </SelectItem>
+                                                <SelectItem value="Special Case Assistance">
+                                                    Special Case Assistance
+                                                </SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </InputLabel>
+                                </div>
+                            ) : (
+                                <></>
+                            )}
+                        </div>
                     </div>
                     <div className="w-1/2 text-right font-bold text-lg">
                         <Label>Date:</Label>{" "}
@@ -404,10 +536,9 @@ export default function Form({
                 </div>
 
                 <div className="flex space-x-4 pl-5 pr-5">
-                    <div className="w-1/3 mt-1 mb-5">
+                    <div className="w-1/3 mt-1">
                         <Label htmlFor="educ_attain" className="">
                             Educational Attainment{" "}
-                            <small className="text-red-600 text-base">*</small>
                         </Label>
                         <Select
                             name="educ_attain"
@@ -420,65 +551,37 @@ export default function Form({
                                 <SelectValue placeholder="" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="No Formal Education">
-                                    No Formal Education
+                                <SelectItem value="Not Attended School">
+                                    Not Attended School
                                 </SelectItem>
-                                <SelectItem value="Primary">
-                                    Primary (Elementary)
+                                <SelectItem value="Elementary Level">
+                                    Elementary Level
                                 </SelectItem>
-                                <SelectItem value="High School">
-                                    High School
+                                <SelectItem value="Elementary Graduate">
+                                    Elementary Graduate
+                                </SelectItem>
+                                <SelectItem value="High School Level">
+                                    High School Level
+                                </SelectItem>
+                                <SelectItem value="High School Graduate">
+                                    High School Graduate
                                 </SelectItem>
                                 <SelectItem value="Vocational">
                                     Vocational
                                 </SelectItem>
-                                <SelectItem value="College">College</SelectItem>
-                                <SelectItem value="Postgraduate">
-                                    Postgraduate
+                                <SelectItem value="College Level">
+                                    College Level
+                                </SelectItem>
+                                <SelectItem value="College Graduate">
+                                    College Graduate
+                                </SelectItem>
+                                <SelectItem value="Post Graduate">
+                                    Post Graduate
                                 </SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
-                    <div className="w-1/3 mt-1">
-                        <Label htmlFor="income" className="">
-                            Income Range (Monthly)
-                        </Label>
 
-                        <Select
-                            name="income"
-                            value={formData.income}
-                            onValueChange={(value) =>
-                                handleSelectChange("income", value)
-                            }
-                        >
-                            <SelectTrigger className="w-full">
-                                <SelectValue placeholder="" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="Below 5,000">
-                                    Below 5,000
-                                </SelectItem>
-                                <SelectItem value="5,000 - 10,000">
-                                    5,000 - 10,000
-                                </SelectItem>
-                                <SelectItem value="10,001 - 15,000">
-                                    10,001 - 15,000
-                                </SelectItem>
-                                <SelectItem value="15,001 - 20,000">
-                                    15,001 - 20,000
-                                </SelectItem>
-                                <SelectItem value="20,001 - 30,000">
-                                    20,001 - 30,000
-                                </SelectItem>
-                                <SelectItem value="30,001 - 40,000">
-                                    30,001 - 40,000
-                                </SelectItem>
-                                <SelectItem value="Above 40,000">
-                                    Above 40,000
-                                </SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
                     <div className="w-1/4 mt-1">
                         <Label htmlFor="religion" className="">
                             Religion
@@ -527,7 +630,78 @@ export default function Form({
                             onChange={handleChange}
                         />
                     </div>
+                    {formData.occupation != "" ? (
+                        <div className="w-1/3 mt-1">
+                            <Label htmlFor="income" className="">
+                                Income Range (Monthly)
+                            </Label>
+
+                            <Select
+                                name="income"
+                                value={formData.income}
+                                onValueChange={(value) =>
+                                    handleSelectChange("income", value)
+                                }
+                            >
+                                <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="Below 3,000">
+                                        Below 3,000
+                                    </SelectItem>
+                                    <SelectItem value="3,000 - 5,000">
+                                        3,000 - 5,000
+                                    </SelectItem>
+                                    <SelectItem value="5,000 - 10,000">
+                                        5,000 - 10,000
+                                    </SelectItem>
+                                    <SelectItem value="10,001 - 15,000">
+                                        10,001 - 15,000
+                                    </SelectItem>
+                                    <SelectItem value="15,001 - 20,000">
+                                        15,001 - 20,000
+                                    </SelectItem>
+                                    <SelectItem value="20,001 - 30,000">
+                                        20,001 - 30,000
+                                    </SelectItem>
+                                    <SelectItem value="30,001 - 40,000">
+                                        30,001 - 40,000
+                                    </SelectItem>
+                                    <SelectItem value="Above 40,000">
+                                        Above 40,000
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    ) : (
+                        <></>
+                    )}
                 </div>
+                {formData.unit_concern ==
+                "Aid to Individual in Crisis (AICS)" ? (
+                    <div className="px-5 text-black">
+                        <InputLabel>Is Patient</InputLabel>
+                        <div className="flex mt-2 gap-x-2">
+                            <Label>
+                                Yes{" "}
+                                <Checkbox
+                                    checked={formData.is_patient === true}
+                                    onChange={() => handleCheckBoxChange(true)}
+                                />
+                            </Label>
+                            <Label>
+                                No{" "}
+                                <Checkbox
+                                    checked={formData.is_patient === false}
+                                    onChange={() => handleCheckBoxChange(false)}
+                                />
+                            </Label>
+                        </div>
+                    </div>
+                ) : (
+                    <></>
+                )}
 
                 <div>
                     <div className="text-base text-white font-bold px-4 mt-2 bg-sky-800 p-2">
@@ -535,11 +709,53 @@ export default function Form({
                     </div>
                     {formData.family_members.map((member, index) => (
                         <div key={index} className="flex space-x-4 text-lg">
-                            <div className="w-full mt-4 p-4  border-gray-300 rounded-md">
-                                <div className="flex justify-between items-center mb-4">
-                                    <h3 className="text-sm font-semibold">
-                                        Family Member {index + 1}
-                                    </h3>
+                            <div className="w-full  p-4  border-gray-300 rounded-md">
+                                {formData.unit_concern ==
+                                "Aid to Individual in Crisis (AICS)" ? (
+                                    <div className="pt-3">
+                                        <Label>
+                                            Is Family Member {index + 1} a
+                                            Patient?
+                                        </Label>
+
+                                        <div className="flex mt-2 gap-x-2">
+                                            <Label>
+                                                Yes{" "}
+                                                <Checkbox
+                                                    checked={
+                                                        member.is_patient ===
+                                                        true
+                                                    }
+                                                    onChange={() =>
+                                                        handleFamilyMemberChange(
+                                                            index,
+                                                            true
+                                                        )
+                                                    }
+                                                />
+                                            </Label>
+                                            <Label>
+                                                No{" "}
+                                                <Checkbox
+                                                    checked={
+                                                        member.is_patient ===
+                                                        false
+                                                    }
+                                                    onChange={() =>
+                                                        handleFamilyMemberChange(
+                                                            index,
+                                                            false
+                                                        )
+                                                    }
+                                                />
+                                            </Label>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <></>
+                                )}
+                                <div className="flex justify-between items-center">
+                                    <div></div>
                                     <Button
                                         type="button"
                                         onClick={() =>
@@ -781,9 +997,6 @@ export default function Form({
                                             htmlFor={`family-education-${index}`}
                                         >
                                             Educational Attainment{" "}
-                                            <small className="text-red-600 text-base">
-                                                *
-                                            </small>
                                         </Label>
                                         <Select
                                             name="educ_attain"
@@ -809,32 +1022,53 @@ export default function Form({
                                                 <SelectValue placeholder="" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="No Formal Education">
-                                                    No Formal Education
+                                                <SelectItem value="Not Attended School">
+                                                    Not Attended School
                                                 </SelectItem>
-                                                <SelectItem value="Primary">
-                                                    Primary (Elementary)
+                                                <SelectItem value="Elementary Level">
+                                                    Elementary Level
                                                 </SelectItem>
-                                                <SelectItem value="Undergraduate High School">
-                                                    Undergraduate High School
+                                                <SelectItem value="Elementary Graduate">
+                                                    Elementary Graduate
                                                 </SelectItem>
-                                                <SelectItem value="High School">
-                                                    High School
+                                                <SelectItem value="High School Level">
+                                                    High School Level
+                                                </SelectItem>
+                                                <SelectItem value="High School Graduate">
+                                                    High School Graduate
                                                 </SelectItem>
                                                 <SelectItem value="Vocational">
                                                     Vocational
                                                 </SelectItem>
-                                                <SelectItem value="Undergraduate College">
-                                                    Undergraduate College
+                                                <SelectItem value="College Level">
+                                                    College Level
                                                 </SelectItem>
-                                                <SelectItem value="College">
-                                                    College
+                                                <SelectItem value="College Graduate">
+                                                    College Graduate
                                                 </SelectItem>
-                                                <SelectItem value="Postgraduate">
-                                                    Postgraduate
+                                                <SelectItem value="Post Graduate">
+                                                    Post Graduate
                                                 </SelectItem>
                                             </SelectContent>
                                         </Select>
+                                    </div>
+
+                                    <div className="w-1/4 mt-1">
+                                        <Label
+                                            htmlFor={`family-occupation-${index}`}
+                                            className=""
+                                        >
+                                            Occupation
+                                        </Label>
+                                        <Input
+                                            id={`family-occupation-${index}`}
+                                            name="occupation"
+                                            type="text"
+                                            value={member?.occupation}
+                                            onChange={(e) =>
+                                                handleFamilyChange(index, e)
+                                            }
+                                        />
                                     </div>
 
                                     <div className="w-1/4 mt-1">
@@ -865,8 +1099,11 @@ export default function Form({
                                                 <SelectValue placeholder="" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="Below 5,000">
-                                                    Below 5,000
+                                                <SelectItem value="Below 3,000">
+                                                    Below 3,000
+                                                </SelectItem>
+                                                <SelectItem value="3,000 - 5,000">
+                                                    3,000 - 5,000
                                                 </SelectItem>
                                                 <SelectItem value="5,000 - 10,000">
                                                     5,000 - 10,000
@@ -888,23 +1125,6 @@ export default function Form({
                                                 </SelectItem>
                                             </SelectContent>
                                         </Select>
-                                    </div>
-                                    <div className="w-1/4 mt-1">
-                                        <Label
-                                            htmlFor={`family-occupation-${index}`}
-                                            className=""
-                                        >
-                                            Occupation
-                                        </Label>
-                                        <Input
-                                            id={`family-occupation-${index}`}
-                                            name="occupation"
-                                            type="text"
-                                            value={member?.occupation}
-                                            onChange={(e) =>
-                                                handleFamilyChange(index, e)
-                                            }
-                                        />
                                     </div>
                                 </div>
                             </div>
@@ -950,7 +1170,7 @@ export default function Form({
                     >
                         Submit
                     </Button>
-                    
+
                     <Button
                         onClick={() => setEdit(false)}
                         type="button"
@@ -961,7 +1181,20 @@ export default function Form({
                         Cancel
                     </Button>
                 </div>
-               {loading ?  <small className="pl-4 font-bold text-sky-700">Creating request please wait...</small> : <></>}
+                {loading ? (
+                    <small className="pl-4 font-bold text-sky-700">
+                        Creating request please wait...
+                    </small>
+                ) : (
+                    <></>
+                )}
+                <div className="p-4">
+                    {text ? (
+                        <small className="font-bold text-red-700">{text}</small>
+                    ) : (
+                        <></>
+                    )}
+                </div>
             </form>
         </div>
     );

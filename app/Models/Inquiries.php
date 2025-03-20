@@ -25,7 +25,9 @@ class Inquiries extends Model
         'sex',
         'income',
         'remarks',
-        'status'
+        'status',
+        'is_patient',
+        'problem_presented'
     ];
 
     public function familyMembers()
