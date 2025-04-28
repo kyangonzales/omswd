@@ -333,8 +333,8 @@ export default function Form({
                                                 <SelectItem value="Burial Assistance">
                                                     Burial Assistance
                                                 </SelectItem>
-                                                <SelectItem value="Medical Assiatnce">
-                                                    Medical Assiatnce
+                                                <SelectItem value="Medical Assistance">
+                                                    Medical Assistance
                                                 </SelectItem>
                                                 <SelectItem value="Balik Probinsya">
                                                     Balik Probinsya
